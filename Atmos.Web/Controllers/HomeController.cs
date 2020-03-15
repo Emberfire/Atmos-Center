@@ -28,8 +28,7 @@ namespace Atmos.Web.Controllers
         [HttpPost]
         public IActionResult Index(string password)
         {
-            password = Uri.UnescapeDataString(password);
-            if (password == "c3ntripetal")
+            if (!string.IsNullOrEmpty(password) && Uri.UnescapeDataString(password) == "c3ntripetal")
             {
                 TempData["trusted"] = true;
                 return RedirectToAction("Movies");
@@ -38,13 +37,12 @@ namespace Atmos.Web.Controllers
             {
                 return View();
             }
-
         }
 
         public IActionResult Movies()
         {
-            bool a = (bool)TempData["trusted"];
-            if (a == true)
+            object b = TempData["trusted"];
+            if (b != null)
             {
                 var movies = new Dictionary<string, string>();
                 DirectoryInfo di = new DirectoryInfo(@"D:\Movies");
