@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Atmos.Web.Models;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Atmos.Web.Controllers
 {
@@ -48,10 +49,26 @@ namespace Atmos.Web.Controllers
                 var movies = new Dictionary<string, string>();
                 DirectoryInfo di = new DirectoryInfo(@"D:\Movies");
                 FileInfo[] files = di.GetFiles("*.mp4", SearchOption.AllDirectories);
+                FileInfo[] mkvFiles = di.GetFiles("*.mkv", SearchOption.AllDirectories);
 
+                Regex regex = new Regex("^Episode [0-9]+ ?•?");
                 for (int i = 0; i < files.Length; i++)
                 {
-                    movies.Add(files[i].Name.Split(".")[0], Uri.EscapeDataString(files[i].FullName));
+                    Match match = regex.Match(files[i].Name.Split(".")[0]);
+
+                    if (!match.Success)
+                    {
+                        movies.Add(files[i].Name.Split(".")[0], Uri.EscapeDataString(files[i].FullName));
+                    }
+                }
+                for (int i = 0; i < mkvFiles.Length; i++)
+                {
+                    Match match = regex.Match(mkvFiles[i].Name.Split(".")[0]);
+
+                    if (!match.Success)
+                    {
+                        movies.Add(mkvFiles[i].Name.Split(".")[0], Uri.EscapeDataString(mkvFiles[i].FullName));
+                    }
                 }
 
                 return View(movies);
