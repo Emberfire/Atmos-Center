@@ -21,16 +21,45 @@ namespace Atmos.Web.Controllers
 
         public IActionResult Index()
         {
-            var movies = new Dictionary<string, string>();
-            DirectoryInfo di = new DirectoryInfo(@"D:\Movies");
-            FileInfo[] files = di.GetFiles("*.mp4", SearchOption.AllDirectories);
+            return View();
+        }
 
-            for (int i = 0; i < files.Length; i++)
+        [HttpPost]
+        public IActionResult Index(string password)
+        {
+            password = Uri.UnescapeDataString(password);
+            if (password == "c3ntripetal")
             {
-                movies.Add(files[i].Name.Split(".")[0], Uri.EscapeDataString(files[i].FullName));
+                TempData["trusted"] = true;
+                return RedirectToAction("Movies");
+            }
+            else
+            {
+                return View();
             }
 
-            return View(movies);
+        }
+
+        public IActionResult Movies()
+        {
+            bool a = (bool)TempData["trusted"];
+            if (a == true)
+            {
+                var movies = new Dictionary<string, string>();
+                DirectoryInfo di = new DirectoryInfo(@"D:\Movies");
+                FileInfo[] files = di.GetFiles("*.mp4", SearchOption.AllDirectories);
+
+                for (int i = 0; i < files.Length; i++)
+                {
+                    movies.Add(files[i].Name.Split(".")[0], Uri.EscapeDataString(files[i].FullName));
+                }
+
+                return View(movies);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         public IActionResult Watch(string path)
