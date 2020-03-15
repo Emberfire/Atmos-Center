@@ -4,9 +4,6 @@
     ViewData["Title"] = "Home Page";
 }
 
-@section headers {
-}
-
 <nav class="sidebar">
 </nav>
 <main class="main">
@@ -17,35 +14,23 @@
         </a>
     }
 </main>
-<button class="btn scroll-to-top hide" type="button"><i class="fas fa-arrow-alt-circle-up"></i> Scroll to top</button>
+<button class="btn scroll-to-top hidden" type="button"><i class="fas fa-arrow-alt-circle-up"></i> Scroll to top</button>
 
 @section scripts {
     <script defer>
-        // Design mode toggle with Numpad dot for easier debugging and designing.
-        let mode = "off"
-        document.addEventListener("keypress", function (event) {
-            if (event.code === "NumpadDecimal") {
-                if (mode === "on") {
-                    mode = "off";
-                } else {
-                    mode = "on";
-                }
-                document.designMode = mode;
-                alert(`Design mode is now ${mode}.`);
-            }
-        }, { passive: true });
-
+        // Scroll to top button
         let element = document.querySelector(".main");
         let topButton = document.querySelector(".scroll-to-top");
         topButton.addEventListener("click", function () {
             element.scrollTo({ top: 0, behavior: "smooth" });
         }, { passive: true });
 
+        // Scroll listener for scroll to top button
         element.addEventListener("scroll", function () {
             if (element.scrollTop >= 400) {
-                topButton.classList.remove("hide");
+                topButton.classList.remove("hidden");
             } else {
-                topButton.classList.add("hide");
+                topButton.classList.add("hidden");
             }
         }, { passive: true });
     </script>
