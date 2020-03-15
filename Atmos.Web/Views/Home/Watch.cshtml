@@ -1,0 +1,9 @@
+﻿@{
+    ViewData["Title"] = "Watch";
+}
+<style>
+    .test {
+        width: 100%;
+    }
+</style>
+<video class="test" src="@Url.Action("GetVideo", "Home", new { path = ViewBag.Id })" controls></video>

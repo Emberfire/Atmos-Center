@@ -1,0 +1,52 @@
+﻿@model Dictionary<string, string>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section headers {
+}
+
+<nav class="sidebar">
+</nav>
+<main class="main">
+    @foreach (var entry in Model)
+    {
+        <a target="_blank" href="@Url.Action("Watch", "Home", new { path = entry.Value })" class="thumbnail">
+            @entry.Key
+        </a>
+    }
+</main>
+<button class="btn scroll-to-top hide" type="button"><i class="fas fa-arrow-alt-circle-up"></i> Scroll to top</button>
+
+@section scripts {
+    <script defer>
+        // Design mode toggle with Numpad dot for easier debugging and designing.
+        let mode = "off"
+        document.addEventListener("keypress", function (event) {
+            if (event.code === "NumpadDecimal") {
+                if (mode === "on") {
+                    mode = "off";
+                } else {
+                    mode = "on";
+                }
+                document.designMode = mode;
+                alert(`Design mode is now ${mode}.`);
+            }
+        }, { passive: true });
+
+        let element = document.querySelector(".main");
+        let topButton = document.querySelector(".scroll-to-top");
+        topButton.addEventListener("click", function () {
+            element.scrollTo({ top: 0, behavior: "smooth" });
+        }, { passive: true });
+
+        element.addEventListener("scroll", function () {
+            if (element.scrollTop >= 400) {
+                topButton.classList.remove("hide");
+            } else {
+                topButton.classList.add("hide");
+            }
+        }, { passive: true });
+    </script>
+}
