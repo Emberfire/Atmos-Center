@@ -13,6 +13,12 @@ body {
     display: flex;
 }
 
+video {
+    justify-self: center;
+    width: 1920px;
+    height: 804px;
+}
+
 .sidebar {
     background-color: #91a3b5;
     display: flex;

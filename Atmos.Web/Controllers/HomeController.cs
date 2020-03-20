@@ -79,7 +79,16 @@ namespace Atmos.Web.Controllers
 
         public IActionResult Watch(string path)
         {
+            //(new NReco.VideoConverter.FFMpegConverter()).ConvertMedia(pathToVideoFile, pathToOutputMp4File, Formats.mp4)
             ViewBag.Id = path;
+            //if (path.Split(".")[1] == "mkv")
+            //{
+            //    var ffMpeg = new NReco.VideoConverter.FFMpegConverter();
+            //    var newPath = Uri.UnescapeDataString(path).Split(".")[0] + ".mp4";
+            //    ffMpeg.ConvertMedia(path, newPath, Format.mp4);
+            //}
+
+            ViewBag.Subs = path.Split(".")[0] + ".vtt";
             return View();
         }
 
@@ -87,6 +96,12 @@ namespace Atmos.Web.Controllers
         {
             path = Uri.UnescapeDataString(path);
             return PhysicalFile(path, "application/octet-stream", enableRangeProcessing: true);
+        }
+
+        public IActionResult GetSubtitles(string path)
+        {
+            path = Uri.UnescapeDataString(path);
+            return PhysicalFile(path, "text/vtt");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

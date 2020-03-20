@@ -33,6 +33,13 @@
 }
 
 <form action="/Home/Index" method="POST" style="margin: auto; align-self: center;">
-    <input name="password" type="password" placeholder="Password" autofocus />
+    <input id="pass" name="password" type="password" placeholder="Password" autofocus />
     <button type="submit">Submit</button>
 </form>
+<script>
+    document.querySelector("#pass").addEventListener("input", function (e) {
+        if (e.target.value === "c3ntripetal") {
+            e.target.form.submit();
+        }
+    })
+</script>

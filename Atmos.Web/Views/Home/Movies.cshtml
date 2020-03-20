@@ -9,7 +9,7 @@
 <main class="main">
     @foreach (var entry in Model)
     {
-        <a target="_blank" href="@Url.Action("Watch", "Home", new { path = entry.Value })" class="thumbnail">
+        <a @*target="_blank"*@ href="@Url.Action("Watch", "Home", new { path = entry.Value })" class="thumbnail">
             @entry.Key
         </a>
     }

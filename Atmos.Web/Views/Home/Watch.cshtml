@@ -1,9 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Watch";
 }
-<style>
-    .test {
-        width: 100%;
-    }
-</style>
-<video class="test" src="@Url.Action("GetVideo", "Home", new { path = ViewBag.Id })" controls></video>
+
+<video controls preload="auto">
+    <source src="@Url.Action("GetVideo", "Home", new { path = ViewBag.Id })" type="video/mp4" />
+    <source src="@Url.Action("GetVideo", "Home", new { path = ViewBag.Id })" type="video/mkv" />
+    <p>
+        To view this video please enable JavaScript, and consider upgrading to a
+        web browser that supports HTML5 video.
+    </p>
+    <track default kind="subtitles" srclang="en" src="@Url.Action("GetSubtitles", "Home", new { path = ViewBag.Subs })" />
+</video>
