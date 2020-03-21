@@ -36,7 +36,7 @@
     <input id="pass" name="password" type="password" placeholder="Password" autofocus />
     <button type="submit">Submit</button>
 </form>
-<script>
+<script defer>
     document.querySelector("#pass").addEventListener("input", function (e) {
         if (e.target.value === "c3ntripetal") {
             e.target.form.submit();

@@ -76,6 +76,11 @@ namespace Atmos.Web.Controllers
                 Title = movie.Title,
                 Extension = movie.Extension
             };
+
+            foreach (var subtitle in movie.Subtitles)
+            {
+                model.Subtitles.Add(subtitle.Language, subtitle.Id);
+            }
             //if (path.Split(".")[1] == "mkv")
             //{
             //    var ffMpeg = new NReco.VideoConverter.FFMpegConverter();
@@ -100,15 +105,23 @@ namespace Atmos.Web.Controllers
             }
         }
 
-        public IActionResult GetSubtitles(string path)
+        public async Task<IActionResult> GetSubtitle(string id)
         {
-            path = Uri.UnescapeDataString(path);
-            return PhysicalFile(path, "text/vtt");
+            Models.Entities.Subtitle subtitles = await Session.GetSubtitleAsync(Uri.UnescapeDataString(id));
+            if (subtitles != null)
+            {
+                return PhysicalFile(subtitles.Path, "text/vtt");
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         public IActionResult Rescan(string path)
         {
             Session.ScanFolderForMovies(Uri.UnescapeDataString(path), SearchOption.AllDirectories);
+            Session.ScanFolderForSubtitles(Uri.UnescapeDataString(path), SearchOption.AllDirectories);
             return Content("Success");
         }
 

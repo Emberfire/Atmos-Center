@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Atmos.Web.Logic.Constants.CommonTypes;
 
 namespace Atmos.Web.Logic.Client
 {
@@ -22,13 +23,14 @@ namespace Atmos.Web.Logic.Client
             Context = context;
         }
 
-        List<FileInfo> GetFilesOfType(DirectoryInfo directoryInfo, CommonTypes.MovieFileType fileType, SearchOption searchOption)
+        List<FileInfo> GetFilesOfType(DirectoryInfo directoryInfo, FileType fileType, SearchOption searchOption)
         {
             string searchPattern = fileType switch
             {
-                CommonTypes.MovieFileType.Mp4 => "*.mp4",
-                CommonTypes.MovieFileType.Mkv => "*.mkv",
-                CommonTypes.MovieFileType.Avi => "*.avi",
+                FileType.Mp4 => "*.mp4",
+                FileType.Mkv => "*.mkv",
+                FileType.Avi => "*.avi",
+                FileType.Vtt => "*.vtt",
                 _ => throw new ArgumentException(nameof(fileType)),
             };
             return directoryInfo.EnumerateFiles(searchPattern, searchOption).ToList();
@@ -61,9 +63,9 @@ namespace Atmos.Web.Logic.Client
 
             DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
             List<FileInfo> files = new List<FileInfo>();
-            files.AddRange(GetFilesOfType(directoryInfo, CommonTypes.MovieFileType.Mp4, searchOption));
-            files.AddRange(GetFilesOfType(directoryInfo, CommonTypes.MovieFileType.Mkv, searchOption));
-            files.AddRange(GetFilesOfType(directoryInfo, CommonTypes.MovieFileType.Avi, searchOption));
+            files.AddRange(GetFilesOfType(directoryInfo, FileType.Mp4, searchOption));
+            files.AddRange(GetFilesOfType(directoryInfo, FileType.Mkv, searchOption));
+            files.AddRange(GetFilesOfType(directoryInfo, FileType.Avi, searchOption));
 
             Regex regex = new Regex("^Episode [0-9]+ ?•?");
             RemoveFilesByPattern(regex, files);
@@ -78,19 +80,65 @@ namespace Atmos.Web.Logic.Client
                 };
             }).OrderBy(movie => movie.Title).ToList();
 
-            using AtmosContext context = new AtmosContext();
             foreach (Movie movie in movies)
             {
-                bool alreadyExists = context.Movies.Any(m => m.Title == movie.Title);
+                bool alreadyExists = Context.Movies.Any(m => m.Title == movie.Title);
                 if (!alreadyExists)
                 {
-                    context.Movies.Add(movie);
+                    Context.Movies.Add(movie);
                 }
             }
             
-            context.SaveChanges();
+            Context.SaveChanges();
         }
+        public void ScanFolderForSubtitles(string folderPath, SearchOption searchOption)
+        {
+            if (string.IsNullOrEmpty(folderPath))
+            {
+                throw new ArgumentException(nameof(folderPath));
+            }
 
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+            List<FileInfo> files = new List<FileInfo>();
+            files.AddRange(GetFilesOfType(directoryInfo, FileType.Vtt, searchOption));
+
+            Regex regex = new Regex("^Episode [0-9]+ ?•?");
+            RemoveFilesByPattern(regex, files);
+
+            List<Subtitle> subtitles = files.Select((file, index) =>
+            {
+                Subtitle subtitle = new Subtitle()
+                {
+                    Language = "en",
+                    Path = file.FullName
+                };
+
+                string title = file.Name.Split(".")[0];
+                Movie movie = Context.Movies.FirstOrDefault(m => m.Title == title);
+                if (movie != null)
+                {
+                    subtitle.Movie = movie;
+                    movie.Subtitles.Add(subtitle);
+                } else
+                {
+                    throw new Exception("Subtitle doesn't have a movie!");
+                }
+
+                return subtitle;
+            }).OrderBy(subtitle => subtitle.Movie.Title).ToList();
+
+            foreach (Subtitle subtitle in subtitles)
+            {
+                bool alreadyExists = Context.Subtitles.Any(s => s.Movie.Title == subtitle.Movie.Title);
+                if (!alreadyExists)
+                {
+                    Context.Subtitles.Add(subtitle);
+                }
+            }
+
+            Context.SaveChanges();
+        }
         public async Task<List<Movie>> GetAllMoviesAsync()
         {
             List<Movie> movies = await Context.Movies.OrderBy(movie => movie.Title).ToListAsync();
@@ -100,6 +148,16 @@ namespace Atmos.Web.Logic.Client
         {
             Movie movie = await Context.Movies.FindAsync(id);
             return movie;
+        }
+        public async Task<Subtitle> GetSubtitleAsync(string id)
+        {
+            Subtitle subtitle = await Context.Subtitles.FindAsync(id);
+            return subtitle;
+        }
+        public async Task<List<Subtitle>> GetMovieSubtitlesAsync(string id)
+        {
+            Movie movie = await Context.Movies.FindAsync(id);
+            return movie.Subtitles;
         }
 
         public void Dispose()

@@ -17,10 +17,11 @@ namespace Atmos.Web.Data
         }
 
         public virtual DbSet<Movie> Movies { get; set; }
+        public virtual DbSet<Subtitle> Subtitles { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLazyLoadingProxies().UseSqlServer(@"Data Source=DESKTOP-S06O8U5;Initial Catalog=AtmosDb;Integrated Security=True");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseLazyLoadingProxies().UseSqlServer(@"Data Source=DESKTOP-S06O8U5;Initial Catalog=AtmosDb;Integrated Security=True");
+        //}
     }
 }

@@ -6,11 +6,14 @@ namespace Atmos.Web.Logic.Constants
 {
     public static class CommonTypes
     {
-        public enum MovieFileType
+        public enum FileType
         {
             Mp4,
             Mkv,
-            Avi
+            Avi,
+            Vtt,
+            Srt,
+            Sub
         }
     }
 }

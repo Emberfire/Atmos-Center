@@ -11,5 +11,9 @@
         To view this video please enable JavaScript, and consider upgrading to a
         web browser that supports HTML5 video.
     </p>
-    @*<track default kind="subtitles" srclang="en" src="@Url.Action("GetSubtitles", "Home", new { path = ViewBag.Subs })" />*@
+
+    @if (Model.Subtitles.ContainsKey("en") && !string.IsNullOrEmpty(Model.Subtitles["en"]))
+    {
+        <track default kind="subtitles" srclang="en" src="@Url.Action("GetSubtitle", "Home", new { id = Uri.EscapeDataString(Model.Subtitles["en"]) })" />
+    }
 </video>

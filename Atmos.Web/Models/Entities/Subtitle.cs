@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using static Atmos.Web.Logic.Constants.CommonTypes;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Atmos.Web.Models.Entities
 {
-    public class Movie
+    public class Subtitle
     {
-        [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-
         [Required]
-        public string Title { get; set; }
-
+        public string Language { get; set; }
         [Required]
         public string Path { get; set; }
-        [Required]
-        public string Extension { get; set; }
 
-        public virtual List<Subtitle> Subtitles { get; set; }
+        [Required]
+        public virtual Movie Movie { get; set; }
     }
 }
