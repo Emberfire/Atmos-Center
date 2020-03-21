@@ -1,13 +1,15 @@
-﻿@{
+﻿@model MovieViewModel
+@{
     ViewData["Title"] = "Watch";
 }
 
 <video controls preload="auto">
-    <source src="@Url.Action("GetVideo", "Home", new { path = ViewBag.Id })" type="video/mp4" />
-    <source src="@Url.Action("GetVideo", "Home", new { path = ViewBag.Id })" type="video/mkv" />
+    <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/mp4" />
+    <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/mkv" />
+    <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/avi" />
     <p>
         To view this video please enable JavaScript, and consider upgrading to a
         web browser that supports HTML5 video.
     </p>
-    <track default kind="subtitles" srclang="en" src="@Url.Action("GetSubtitles", "Home", new { path = ViewBag.Subs })" />
+    @*<track default kind="subtitles" srclang="en" src="@Url.Action("GetSubtitles", "Home", new { path = ViewBag.Subs })" />*@
 </video>

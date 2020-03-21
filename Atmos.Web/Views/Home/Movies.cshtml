@@ -1,16 +1,20 @@
-﻿@model Dictionary<string, string>
+﻿@model IEnumerable<MovieViewModel>
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <nav class="sidebar">
+    <form id="rescan">
+        <input type="text" placeholder="Enter folder path" />
+        <button type="submit" id="rescan-movies">Rescan</button>
+    </form>
 </nav>
 <main class="main">
-    @foreach (var entry in Model)
+    @foreach (MovieViewModel movie in Model)
     {
-        <a @*target="_blank"*@ href="@Url.Action("Watch", "Home", new { path = entry.Value })" class="thumbnail">
-            @entry.Key
+        <a href="@Url.Action("Watch", "Home", new { id = movie.Id })" class="thumbnail">
+            @movie.Title
         </a>
     }
 </main>
@@ -33,5 +37,25 @@
                 topButton.classList.add("hidden");
             }
         }, { passive: true });
+
+        document.getElementById("rescan").addEventListener("submit", function (event) {
+            event.preventDefault();
+            let input = event.target.querySelector("input");
+            if (input && input.value) {
+                let text = encodeURI(input.value);
+                $.ajax({
+                    url: "/Home/Rescan",
+                    type: "GET",
+                    data: { path: text },
+                    success: function () {
+                        alert("Successfully rescanned the folder");
+                        window.location.reload();
+                    },
+                    error: function () {
+                        alert("Failed to rescan the folder");
+                    }
+                });
+            }
+        });
     </script>
 }

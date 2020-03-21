@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Atmos.Web.Data;
+using Atmos.Web.Logic.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +27,11 @@ namespace Atmos.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<AtmosContext>(options =>
+            {
+                options.UseLazyLoadingProxies().UseSqlServer(Configuration["ConnectionString"]);
+            });
+            //services.AddSingleton<IAtmosClientSession, AtmosClientSession>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

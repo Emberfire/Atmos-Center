@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Atmos.Server.Migrations
+namespace Atmos.Web.Migrations
 {
     public partial class Initial : Migration
     {
@@ -12,7 +12,8 @@ namespace Atmos.Server.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: false),
-                    Path = table.Column<string>(nullable: false)
+                    Path = table.Column<string>(nullable: false),
+                    Extension = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

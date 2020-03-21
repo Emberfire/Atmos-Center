@@ -5,19 +5,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Atmos.Web.Models;
+using Atmos.Web.Models.ViewModels;
 using System.IO;
 using System.Text.RegularExpressions;
+using Atmos.Web.Logic.Client;
+using Atmos.Web.Models;
+using Atmos.Web.Data;
 
 namespace Atmos.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IAtmosClientSession Session;
+        public HomeController(ILogger<HomeController> logger, AtmosContext context)
         {
             _logger = logger;
+            Session = new AtmosClientSession(context);
         }
 
         public IActionResult Index()
@@ -39,37 +43,22 @@ namespace Atmos.Web.Controllers
             }
         }
 
-        public IActionResult Movies()
+        public async Task<IActionResult> Movies()
         {
             object b = TempData["trusted"];
             if (b != null)
             {
-                var movies = new Dictionary<string, string>();
-                DirectoryInfo di = new DirectoryInfo(@"D:\Movies");
-                FileInfo[] files = di.GetFiles("*.mp4", SearchOption.AllDirectories);
-                FileInfo[] mkvFiles = di.GetFiles("*.mkv", SearchOption.AllDirectories);
-
-                Regex regex = new Regex("^Episode [0-9]+ ?•?");
-                for (int i = 0; i < files.Length; i++)
+                List<Models.Entities.Movie> movies = await Session.GetAllMoviesAsync();
+                IEnumerable<MovieViewModel> model = movies.Select((movie, index) =>
                 {
-                    Match match = regex.Match(files[i].Name.Split(".")[0]);
-
-                    if (!match.Success)
+                    return new MovieViewModel()
                     {
-                        movies.Add(files[i].Name.Split(".")[0], Uri.EscapeDataString(files[i].FullName));
-                    }
-                }
-                for (int i = 0; i < mkvFiles.Length; i++)
-                {
-                    Match match = regex.Match(mkvFiles[i].Name.Split(".")[0]);
-
-                    if (!match.Success)
-                    {
-                        movies.Add(mkvFiles[i].Name.Split(".")[0], Uri.EscapeDataString(mkvFiles[i].FullName));
-                    }
-                }
-
-                return View(movies);
+                        Id = movie.Id,
+                        Title = movie.Title,
+                        Extension = movie.Extension
+                    };
+                });
+                return View(model);
             }
             else
             {
@@ -77,10 +66,16 @@ namespace Atmos.Web.Controllers
             }
         }
 
-        public IActionResult Watch(string path)
+        public async Task<IActionResult> Watch(string id)
         {
+            var movie = await Session.GetMovieAsync(id);
             //(new NReco.VideoConverter.FFMpegConverter()).ConvertMedia(pathToVideoFile, pathToOutputMp4File, Formats.mp4)
-            ViewBag.Id = path;
+            var model = new MovieViewModel()
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Extension = movie.Extension
+            };
             //if (path.Split(".")[1] == "mkv")
             //{
             //    var ffMpeg = new NReco.VideoConverter.FFMpegConverter();
@@ -88,20 +83,33 @@ namespace Atmos.Web.Controllers
             //    ffMpeg.ConvertMedia(path, newPath, Format.mp4);
             //}
 
-            ViewBag.Subs = path.Split(".")[0] + ".vtt";
-            return View();
+            //ViewBag.Subs = path.Split(".")[0] + ".vtt";
+            return View(model);
         }
 
-        public IActionResult GetVideo(string path)
+        public async Task<IActionResult> GetVideo(string id)
         {
-            path = Uri.UnescapeDataString(path);
-            return PhysicalFile(path, "application/octet-stream", enableRangeProcessing: true);
+            Models.Entities.Movie movie = await Session.GetMovieAsync(id);
+            if (movie != null)
+            {
+                return PhysicalFile(movie.Path, "application/octet-stream", enableRangeProcessing: true);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         public IActionResult GetSubtitles(string path)
         {
             path = Uri.UnescapeDataString(path);
             return PhysicalFile(path, "text/vtt");
+        }
+
+        public IActionResult Rescan(string path)
+        {
+            Session.ScanFolderForMovies(Uri.UnescapeDataString(path), SearchOption.AllDirectories);
+            return Content("Success");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
