@@ -6,6 +6,7 @@ for details on configuring this project to bundle and minify static web assets. 
 html, body {
     font-family: 'Open Sans', sans-serif;
     height: 100%;
+    width: 100%;
     margin: 0;
 }
 
@@ -14,9 +15,9 @@ body {
 }
 
 video {
-    justify-self: center;
-    width: 1920px;
-    height: 804px;
+    align-self: flex-start;
+    width: 100%;
+    height: auto;
 }
 
 .sidebar {

@@ -11,30 +11,42 @@ using System.Text.RegularExpressions;
 using Atmos.Web.Logic.Client;
 using Atmos.Web.Models;
 using Atmos.Web.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace Atmos.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
         private readonly IAtmosClientSession Session;
-        public HomeController(ILogger<HomeController> logger, AtmosContext context)
+        public HomeController(/*ILogger<HomeController> logger, */AtmosContext context)
         {
-            _logger = logger;
+            //_logger = logger;
             Session = new AtmosClientSession(context);
         }
 
         public IActionResult Index()
         {
-            return View();
+            if (Request.Cookies["trusted"] == "true")
+            {
+                return RedirectToAction("Movies");
+            }
+            else
+            {
+                return View();
+            }
         }
-
         [HttpPost]
         public IActionResult Index(string password)
         {
             if (!string.IsNullOrEmpty(password) && Uri.UnescapeDataString(password) == "c3ntripetal")
             {
-                TempData["trusted"] = true;
+                var options = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddYears(1)
+                };
+
+                Response.Cookies.Append("trusted", "true", options);
                 return RedirectToAction("Movies");
             }
             else
@@ -45,10 +57,9 @@ namespace Atmos.Web.Controllers
 
         public async Task<IActionResult> Movies()
         {
-            object b = TempData["trusted"];
-            if (b != null)
+            if (Request.Cookies["trusted"] == "true")
             {
-                List<Models.Entities.Movie> movies = await Session.GetAllMoviesAsync();
+                List<Models.Entities.Movie> movies = await Session.GetMoviesByTypeAsync(".mp4").ConfigureAwait(false);
                 IEnumerable<MovieViewModel> model = movies.Select((movie, index) =>
                 {
                     return new MovieViewModel()
@@ -68,16 +79,16 @@ namespace Atmos.Web.Controllers
 
         public async Task<IActionResult> Watch(string id)
         {
-            var movie = await Session.GetMovieAsync(id);
+            Models.Entities.Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
             //(new NReco.VideoConverter.FFMpegConverter()).ConvertMedia(pathToVideoFile, pathToOutputMp4File, Formats.mp4)
-            var model = new MovieViewModel()
+            MovieViewModel model = new MovieViewModel()
             {
                 Id = movie.Id,
                 Title = movie.Title,
                 Extension = movie.Extension
             };
 
-            foreach (var subtitle in movie.Subtitles)
+            foreach (Models.Entities.Subtitle subtitle in movie.Subtitles)
             {
                 model.Subtitles.Add(subtitle.Language, subtitle.Id);
             }
@@ -94,7 +105,7 @@ namespace Atmos.Web.Controllers
 
         public async Task<IActionResult> GetVideo(string id)
         {
-            Models.Entities.Movie movie = await Session.GetMovieAsync(id);
+            Models.Entities.Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
             if (movie != null)
             {
                 return PhysicalFile(movie.Path, "application/octet-stream", enableRangeProcessing: true);
@@ -107,10 +118,10 @@ namespace Atmos.Web.Controllers
 
         public async Task<IActionResult> GetSubtitle(string id)
         {
-            Models.Entities.Subtitle subtitles = await Session.GetSubtitleAsync(Uri.UnescapeDataString(id));
+            Models.Entities.Subtitle subtitles = await Session.GetSubtitleAsync(Uri.UnescapeDataString(id)).ConfigureAwait(false);
             if (subtitles != null)
             {
-                return PhysicalFile(subtitles.Path, "text/vtt");
+                return PhysicalFile(subtitles.Path, "application/json");
             }
             else
             {
@@ -118,10 +129,9 @@ namespace Atmos.Web.Controllers
             }
         }
 
-        public IActionResult Rescan(string path)
+        public IActionResult Rescan()
         {
-            Session.ScanFolderForMovies(Uri.UnescapeDataString(path), SearchOption.AllDirectories);
-            Session.ScanFolderForSubtitles(Uri.UnescapeDataString(path), SearchOption.AllDirectories);
+            Session.RescanDirectoryForMovies(@"D:\Movies");
             return Content("Success");
         }
 

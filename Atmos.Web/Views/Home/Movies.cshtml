@@ -5,10 +5,9 @@
 }
 
 <nav class="sidebar">
-    <form id="rescan">
-        <input type="text" placeholder="Enter folder path" />
-        <button type="submit" id="rescan-movies">Rescan</button>
-    </form>
+    <div class="sidebar-menu">
+        <button type="button" id="rescan">Rescan</button>
+    </div>
 </nav>
 <main class="main">
     @foreach (MovieViewModel movie in Model)
@@ -38,24 +37,19 @@
             }
         }, { passive: true });
 
-        document.getElementById("rescan").addEventListener("submit", function (event) {
-            event.preventDefault();
-            let input = event.target.querySelector("input");
-            if (input && input.value) {
-                let text = encodeURI(input.value);
-                $.ajax({
-                    url: "/Home/Rescan",
-                    type: "GET",
-                    data: { path: text },
-                    success: function () {
-                        alert("Successfully rescanned the folder");
-                        window.location.reload();
-                    },
-                    error: function () {
-                        alert("Failed to rescan the folder");
-                    }
-                });
-            }
+        document.getElementById("rescan").addEventListener("click", function (event) {
+            $.ajax({
+                url: "/Home/Rescan",
+                type: "GET",
+                success: function () {
+                    alert("Successfully rescanned the folder");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("Failed to rescan the folder");
+                    window.location.reload();
+                }
+            });
         });
     </script>
 }
