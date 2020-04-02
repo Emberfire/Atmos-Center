@@ -3,6 +3,8 @@ for details on configuring this project to bundle and minify static web assets. 
 
 @import url(variables.css);
 
+/*#region General */
+
 html, body {
     font-family: 'Open Sans', sans-serif;
     height: 100%;
@@ -14,6 +16,81 @@ body {
     display: flex;
 }
 
+.btn {
+    display: inline-block;
+    font-weight: bold;
+    color: #1f3e32;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 8px 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 50px;
+    background-color: #95dab6;
+    outline: none;
+}
+
+.btn:hover {
+    background-color: #6bc797;
+}
+
+.logo {
+    padding: 12px;
+}
+
+/*#endregion */
+
+/*#region Sidebar */
+
+.sidebar {
+    background-color: var(--primary-0);
+    display: flex;
+    flex-flow: column wrap;
+    transition: all 100ms ease-in-out;
+}
+
+.drawer button {
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 8px 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+    outline: none;
+    background-color: transparent;
+}
+
+.drawer {
+    background-color: var(--primary-0);
+    flex: 0;
+    flex-basis: 0;
+    transition: flex 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-x: hidden;
+    box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
+}
+
+.sidebar:hover + .drawer,
+.drawer:hover,
+.drawer:focus,
+.drawer:active,
+.drawer:visited,
+.drawer:focus-within {
+    /*flex: 1;*/
+    flex-basis: 100%;
+}
+
+.drawer-content {
+    padding: 8px;
+}
+
+/*#endregion */
+
 video {
     align-self: center;
     max-width: 100%;
@@ -21,12 +98,6 @@ video {
     margin: 0 auto;
 }
 
-.sidebar {
-    background-color: #91a3b5;
-    display: flex;
-    flex-flow: column wrap;
-    transition: all 100ms ease-in-out;
-}
 
 .main {
     display: flex;
@@ -50,49 +121,24 @@ video {
     /*background-color: lightslategray;*/
 }
 
-    .thumbnail:hover {
-        text-decoration: none;
-        color: inherit;
-    }
-
-.btn {
-    display: inline-block;
-    font-weight: bold;
-    color: #1f3e32;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    background-color: transparent;
-    border: 1px solid transparent;
-    padding: 8px 12px;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: 50px;
-    background-color: #95dab6;
-    outline: none;
+.thumbnail:hover {
+    text-decoration: none;
+    color: inherit;
 }
-
-    .btn:hover {
-        background-color: #6bc797;
-    }
 
 .scroll-to-top {
     position: fixed;
     transition: transform .2s cubic-bezier(0.85, -0.02, 0, 0.98);
 }
 
-    .scroll-to-top.hidden {
-        transform: translateX(130%);
-    }
+.scroll-to-top.hidden {
+    transform: translateX(130%);
+}
 
-    .logo {
-        padding: 12px;
-    }
 
-    .sidebar>.logo>img {
-        width: 100%;
-    }
+.sidebar > .logo > img {
+    width: 100%;
+}
 
 /* Large screens */
 @media only screen and (min-width: 740px) {
@@ -123,10 +169,10 @@ video {
         height: 325px;
     }
 
-        .thumbnail:hover {
-            box-shadow: 0 0px 1px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.20), 0 2px 4px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.05);
-            transform: translateY(-3px);
-        }
+    .thumbnail:hover {
+        box-shadow: 0 0px 1px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.20), 0 2px 4px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.05);
+        transform: translateY(-3px);
+    }
 
     *::-webkit-scrollbar {
         width: 10px;
@@ -140,9 +186,9 @@ video {
         background-color: lightslategray;
     }
 
-        *::-webkit-scrollbar-thumb:hover {
-            background-color: #515b65;
-        }
+    *::-webkit-scrollbar-thumb:hover {
+        background-color: var(--primary-1);
+    }
 }
 
 /* Mobile */

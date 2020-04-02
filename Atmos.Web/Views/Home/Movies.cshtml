@@ -3,12 +3,15 @@
 @{
     ViewData["Title"] = "Movies";
 }
+
 <nav class="sidebar">
     <span class="logo" style="display: block"><img src="~/atmos.png" alt="Logo" /></span>
-    <div class="sidebar-menu">
+</nav>
+<div class="drawer">
+    <div class="drawer-content">
         <button type="button" id="rescan">Rescan</button>
     </div>
-</nav>
+</div>
 <main class="main">
     @foreach (MovieViewModel movie in Model)
     {
