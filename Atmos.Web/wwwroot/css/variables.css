@@ -3,6 +3,10 @@
     --md: 768px;
     --lg: 992px;
     --xl: 1200px;
-    --primary-0: #91a3b5;
-    --primary-1: #515b65;
+    --gray-0: #98a5bd;
+    --gray-1: #c5d0e4;
+    --primary-0: #162938;
+    --primary-1: #2b82a4;
+    --primary-2: #5d97ce;
+    --primary-3: #b3e3ef;
 }

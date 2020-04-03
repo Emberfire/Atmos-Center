@@ -4,92 +4,24 @@ for details on configuring this project to bundle and minify static web assets. 
 @import url(variables.css);
 
 /*#region General */
+* {
+    box-sizing: border-box;
+}
 
 html, body {
     font-family: 'Open Sans', sans-serif;
+
     height: 100%;
     width: 100%;
     margin: 0;
 }
 
 body {
+    height: 100%;
+
     display: flex;
+    flex-direction: row;
 }
-
-.btn {
-    display: inline-block;
-    font-weight: bold;
-    color: #1f3e32;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid transparent;
-    padding: 8px 12px;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: 50px;
-    background-color: #95dab6;
-    outline: none;
-}
-
-.btn:hover {
-    background-color: #6bc797;
-}
-
-.logo {
-    padding: 12px;
-}
-
-/*#endregion */
-
-/*#region Sidebar */
-
-.sidebar {
-    background-color: var(--primary-0);
-    display: flex;
-    flex-flow: column wrap;
-    transition: all 100ms ease-in-out;
-}
-
-.drawer button {
-    width: 100%;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    border: 1px solid transparent;
-    padding: 8px 12px;
-    font-size: 1rem;
-    line-height: 1.5;
-    outline: none;
-    background-color: transparent;
-}
-
-.drawer {
-    background-color: var(--primary-0);
-    flex: 0;
-    flex-basis: 0;
-    transition: flex 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow-x: hidden;
-    box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
-}
-
-.sidebar:hover + .drawer,
-.drawer:hover,
-.drawer:focus,
-.drawer:active,
-.drawer:visited,
-.drawer:focus-within {
-    /*flex: 1;*/
-    flex-basis: 100%;
-}
-
-.drawer-content {
-    padding: 8px;
-}
-
-/*#endregion */
 
 video {
     align-self: center;
@@ -98,80 +30,241 @@ video {
     margin: 0 auto;
 }
 
-
-.main {
-    display: flex;
-    transform: translateZ(0);
-    padding: 10px;
-    transition: all 100ms ease-in-out;
-}
-
-.thumbnail {
-    text-align: center;
-    display: flex;
-    background-color: white;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-    text-decoration: none;
-    color: inherit;
-    transition: all 100ms ease-in-out;
-    padding: 5px;
-    /* Debug */
-    /*background-color: lightslategray;*/
-}
-
-.thumbnail:hover {
-    text-decoration: none;
-    color: inherit;
-}
-
 .scroll-to-top {
+    display: inline-block;
     position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    
+    padding: 8px 12px;
+
+    font-weight: bold;
+    font-size: 1rem;
+    line-height: 1.5;
+    
+    color: #1f3e32;
+    border: 1px solid transparent;
+    border-radius: 50px;
+    background-color: #95dab6;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    
+    text-align: center;
+    vertical-align: middle;
+    
     transition: transform .2s cubic-bezier(0.85, -0.02, 0, 0.98);
+    will-change: transform, background-color;
+}
+
+.scroll-to-top:hover {
+    background-color: #6bc797;
 }
 
 .scroll-to-top.hidden {
     transform: translateX(130%);
 }
 
-
-.sidebar > .logo > img {
-    width: 100%;
+.img-responsive {
+    max-width: 100%;
+    max-height: 100%;
 }
+
+.drawer-button {
+    width: 100%;
+    padding: 8px 12px;
+
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    vertical-align: middle;
+    
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    
+    border: 1px solid transparent;
+    background-color: transparent;
+
+    transition: box-shadow .1s ease-in-out;
+}
+
+.drawer-button:hover,
+.drawer.pinned .pin-drawer {
+    box-shadow: 0 1px 1px rgba(0,0,0,0.11), 0 2px 2px rgba(0,0,0,0.11), 0 4px 4px rgba(0,0,0,0.11), 0 6px 8px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.11);
+}
+/*#endregion */
+
+/*#region Sidebar */
+.sidebar {
+    width: 5rem;
+    height: 100%;
+
+    background-color: var(--primary-0);
+}
+
+.sidebar-content {
+    height: 100%;
+    padding: 5px;
+    
+    display: flex;
+}
+
+.pin-drawer {
+    -webkit-appearance: none;
+    width: 17px;
+    height: 17px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: 1px solid var(--gray-1);
+    border-radius: 8px;
+    outline: none;
+
+    display: none;
+}
+
+.pin-drawer:checked {
+    background-color: var(--gray-1);
+}
+
+.drawer-toggle {
+    color: white;
+    padding: 5px 2px;
+}
+/*#endregion */
+
+/*#region Sidebar drawer */
+.drawer {
+    min-width: 0;
+    max-width: 0;
+
+    flex: 1;
+    overflow-x: hidden;
+
+    /* Collapse the drawer in, instead of just hiding elements. */
+    direction: rtl;
+    
+    box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
+    background-color: var(--primary-2);
+
+    transition: min-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: min-width;
+}
+
+.drawer-content {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    
+    height: 100%;
+
+    padding: 8px;
+    padding-bottom: 35px;
+}
+
+h2.drawer-title {
+    min-height: 5rem;
+    margin: -8px;
+    padding: 10px;
+    
+    text-align: center;
+    clip-path: polygon(0 0, 100% 0, 100% 94%, 0% 100%);
+
+    font-size: xx-large;
+    box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
+    /*background: rgb(22,41,56);
+    background: linear-gradient(177deg, rgba(22,41,56,1) 0%, rgba(93,151,206,1) 87%);*/
+    background-color: var(--primary-0);
+    color: var(--primary-3);
+}
+
+@media screen and (hover: hover) {
+    /* Keep the drawer open when hovering, because it can't recieve focus and closes. */
+    .sidebar:hover + .drawer:not(.pinned),
+    .drawer:hover:not(.pinned),
+    .drawer:focus:not(.pinned),
+    .drawer.pinned,
+    .drawer.expanded
+    /*.drawer:focus-within,*/ {
+        min-width: 10rem;
+        max-width: 10rem;
+    }
+
+    .pin-drawer {
+        display: block;
+    }
+
+    .drawer-toggle {
+        display: none;
+    }
+}
+
+.drawer.expanded {
+    min-width: 10rem;
+    max-width: 10rem;
+}
+/*#endregion */
+
+/*#region Movies container */
+.main {
+    flex: 1;
+}
+
+.movies-content {
+    height: 100%;
+    
+    overflow-y: auto;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+    /* Create a new stacking context, preventing repaint on scroll. Chromium performance issue. */
+    transform: translateZ(0);
+}
+
+/*#region Movie */
+.thumbnail {
+    width: 220px;
+    height: 325px;
+    margin: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+    
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    box-shadow: 0 1px 1px rgba(0,0,0,0.11),
+                0 2px 2px rgba(0,0,0,0.11),
+                0 4px 4px rgba(0,0,0,0.11),
+                0 6px 8px rgba(0,0,0,0.11),
+                0 8px 16px rgba(0,0,0,0.11);
+    background-color: white;
+    text-decoration: none;
+    color: inherit;
+
+    transition: transform .1s ease-in-out;
+    will-change: transform;
+    /* Debug */
+    /*background-color: lightslategray;*/
+}
+
+.thumbnail:hover {
+    transform: translateY(-3px);
+}
+/*#endregion */
+/*#endregion */
 
 /* Large screens */
 @media only screen and (min-width: 740px) {
-    body {
-        flex-direction: row;
-    }
-
-    .sidebar {
-        flex-shrink: 0;
-        width: 5rem;
-    }
-
-    .main {
-        flex-grow: 1;
-        overflow-y: auto;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .scroll-to-top {
-        bottom: 2rem;
-        right: 2rem;
-    }
-
-    .thumbnail {
-        margin: 5px;
-        width: 220px;
-        height: 325px;
-    }
-
-    .thumbnail:hover {
-        box-shadow: 0 0px 1px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.20), 0 2px 4px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.05);
-        transform: translateY(-3px);
+    .sidebar-content {
+        flex-direction: column;
+        align-items: center;
     }
 
     *::-webkit-scrollbar {
@@ -183,17 +276,22 @@ video {
     }
 
     *::-webkit-scrollbar-thumb {
-        background-color: lightslategray;
+        background-color: var(--gray-1);
     }
 
     *::-webkit-scrollbar-thumb:hover {
-        background-color: var(--primary-1);
+        background-color: var(--gray-0);
     }
 }
 
 /* Mobile */
 @media only screen and (max-width: 739px) {
-    body {
+    .sidebar-content {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    /*body {
         flex-direction: column;
     }
 
@@ -201,7 +299,6 @@ video {
         flex-shrink: 0;
         height: 5rem;
         order: 1;
-        /*color: hsla(210, 30%, 16%, 1);*/
     }
 
     .main {
@@ -225,5 +322,5 @@ video {
         margin: 5px;
         min-height: 6rem;
         -webkit-tap-highlight-color: transparent;
-    }
+    }*/
 }

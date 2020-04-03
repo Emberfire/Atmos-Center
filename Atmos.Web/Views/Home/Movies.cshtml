@@ -5,42 +5,53 @@
 }
 
 <nav class="sidebar">
-    <span class="logo" style="display: block"><img src="~/atmos.png" alt="Logo" /></span>
+    <div class="sidebar-content">
+        <img class="img-responsive" src="~/atmos.png" alt="Logo" width="60" height="60" />
+        <button class="drawer-button drawer-toggle" type="button" style="margin-top: auto;">Expand</button>
+    </div>
 </nav>
 <div class="drawer">
     <div class="drawer-content">
-        <button type="button" id="rescan">Rescan</button>
+        <h2 class="drawer-title">Atmos</h2>
+        <button class="drawer-button" type="button" id="rescan" style="margin-top: auto;">Rescan</button>
+        <input type="checkbox" title="Pin" class="pin-drawer" />
     </div>
 </div>
+
 <main class="main">
-    @foreach (MovieViewModel movie in Model)
-    {
-        <a href="@Url.Action("Watch", "Home", new { id = movie.Id })" class="thumbnail">
-            @movie.Title
-        </a>
-    }
+    <div class="movies-content">
+        @foreach (MovieViewModel movie in Model)
+        {
+            <a href="@Url.Action("Watch", "Home", new { id = movie.Id })" class="thumbnail">
+                @movie.Title
+            </a>
+        }
+    </div>
 </main>
-<button class="btn scroll-to-top hidden" type="button"><i class="fas fa-arrow-alt-circle-up"></i> Scroll to top</button>
+<button class="scroll-to-top hidden" type="button"><i class="fas fa-arrow-alt-circle-up"></i> Scroll to top</button>
 
 @section scripts {
     <script defer>
-        // Scroll to top button
-        let element = document.querySelector(".main");
-        let topButton = document.querySelector(".scroll-to-top");
-        topButton.addEventListener("click", function () {
-            element.scrollTo({ top: 0, behavior: "smooth" });
+        const drawer = document.querySelector(".drawer");
+        const pinDrawerCheckbox = document.querySelector(".pin-drawer");
+        const moviesContainer = document.querySelector(".movies-content");
+        const scrollToTopButton = document.querySelector(".scroll-to-top");
+        const drawerToggleButton = document.querySelector(".drawer-toggle");
+
+        scrollToTopButton.addEventListener("click", function () {
+            moviesContainer.scrollTo({ top: 0, behavior: "smooth" });
         }, { passive: true });
 
         // Scroll listener for scroll to top button
-        element.addEventListener("scroll", function () {
-            if (element.scrollTop >= 400) {
-                topButton.classList.remove("hidden");
+        moviesContainer.addEventListener("scroll", function () {
+            if (moviesContainer.scrollTop >= 400) {
+                scrollToTopButton.classList.remove("hidden");
             } else {
-                topButton.classList.add("hidden");
+                scrollToTopButton.classList.add("hidden");
             }
         }, { passive: true });
 
-        document.getElementById("rescan").addEventListener("click", function (event) {
+        document.getElementById("rescan").addEventListener("click", function () {
             $.ajax({
                 url: "/Home/Rescan",
                 type: "GET",
@@ -54,5 +65,22 @@
                 }
             });
         });
+
+        // Sidebar drawer toggle
+        document.querySelector(".pin-drawer").addEventListener("mousedown", function (event) {
+            drawer.classList.toggle("pinned");
+
+            localStorage.setItem("sideDrawerExpanded", drawer.classList.contains("pinned"));
+        });
+
+        if (localStorage.getItem("sideDrawerExpanded") === "true") {
+            drawer.classList.add("pinned");
+            pinDrawerCheckbox.checked = true;
+        }
+
+        drawerToggleButton.addEventListener("mousedown", function () {
+            drawer.classList.toggle("expanded");
+
+        })
     </script>
 }
