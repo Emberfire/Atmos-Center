@@ -49,7 +49,7 @@
         const sidebar = document.querySelector(".sidebar");
 
         scrollToTopButton.addEventListener("click", function () {
-            moviesContainer.scrollTo({ top: 0, behavior: "smooth" });
+            moviesContainer.closest(".main").scrollTo({ top: 0, behavior: "smooth" });
         }, { passive: true });
 
         // Scroll listener for scroll to top button

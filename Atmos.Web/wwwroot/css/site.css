@@ -38,6 +38,7 @@ body > * {
     border-radius: 20px;
     border: none;
     -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
     background: var(--primary-0);
     cursor: pointer;
     user-select: none;
@@ -107,6 +108,7 @@ body > * {
     outline: none;
     text-align: center;
     vertical-align: middle;
+    -webkit-tap-highlight-color: transparent;
     transition: transform .2s cubic-bezier(0.85, -0.02, 0, 0.98);
     will-change: transform, background-color;
 }
@@ -210,7 +212,7 @@ body > * {
     }
 
     .drawer-expand {
-        display: none;
+        margin-top: auto;
     }
 
     .sidebar .title {
@@ -238,6 +240,11 @@ body > * {
     padding-bottom: 35px;
 }
 
+.drawer.expanded {
+    flex-shrink: 0;
+    flex-basis: 10rem;
+}
+
 /* Mobile */
 @media only screen and (max-width: 739px) {
     #pin-drawer {
@@ -247,11 +254,6 @@ body > * {
     .drawer .title {
         display: none;
     }
-
-    .drawer.expanded {
-        flex-shrink: 0;
-        flex-basis: 10rem;
-    }
 }
 
 /* Large screens */
@@ -260,11 +262,30 @@ body > * {
         direction: rtl;
     }
 
-    .sidebar:hover ~ .drawer:not(.pinned),
-    .sidebar:active ~ .drawer:not(.pinned),
-    .sidebar:focus ~ .drawer:not(.pinned),
+    @media (hover: hover) and (pointer: fine) {
+        .sidebar:hover ~ .drawer:not(.pinned),
+        .sidebar:active ~ .drawer:not(.pinned),
+        .sidebar:focus ~ .drawer:not(.pinned),
+        .drawer:hover {
+            flex-shrink: 0;
+            flex-basis: 10rem;
+        }
+
+        .drawer-expand {
+            display: none;
+        }
+    }
+
+    .drawer-expand {
+        transform: rotate(90deg);
+    }
+
+    .drawer-expand button.expanded {
+        transform: rotate(90deg);
+    }
+
     .drawer.pinned,
-    .drawer:hover {
+    .drawer.expanded {
         flex-shrink: 0;
         flex-basis: 10rem;
     }
