@@ -4,20 +4,30 @@
     ViewData["Title"] = "Movies";
 }
 
+@*
+    
+*@
+
 <nav class="sidebar">
-    <div class="sidebar-content">
-        <img class="img-responsive" src="~/atmos.png" alt="Logo" width="60" height="60" />
-        <button class="drawer-button drawer-toggle" type="button" style="margin-top: auto;">Expand</button>
-    </div>
+    <ul class="sidebar-content">
+        <li class="sidebar-item">
+            <img class="img-responsive" src="~/atmos.png" alt="Logo" width="60" height="60" />
+        </li>
+        <li class="sidebar-item">
+            <h2 class="title">Atmos</h2>
+        </li>
+        <li class="sidebar-item drawer-expand">
+            <button id="expand-drawer-button" type="button"><i class="fas fa-angle-double-left"></i></button>
+        </li>
+    </ul>
 </nav>
 <div class="drawer">
     <div class="drawer-content">
-        <h2 class="drawer-title">Atmos</h2>
-        <button class="drawer-button" type="button" id="rescan" style="margin-top: auto;">Rescan</button>
-        <input type="checkbox" title="Pin" class="pin-drawer" />
+        <h2 class="title">Atmos</h2>
+        <input id="pin-drawer" class="drawer-checkbox" style="position: absolute; top: 5px; right: 5px;" type="checkbox" title="Pin drawer" />
+        <button id="rescan-button" class="drawer-button" type="button" style="margin-top: auto;">Rescan</button>
     </div>
 </div>
-
 <main class="main">
     <div class="movies-content">
         @foreach (MovieViewModel movie in Model)
@@ -29,29 +39,29 @@
     </div>
 </main>
 <button class="scroll-to-top hidden" type="button"><i class="fas fa-arrow-alt-circle-up"></i> Scroll to top</button>
-
 @section scripts {
     <script defer>
         const drawer = document.querySelector(".drawer");
-        const pinDrawerCheckbox = document.querySelector(".pin-drawer");
+        const pinDrawerCheckbox = document.getElementById("pin-drawer");
         const moviesContainer = document.querySelector(".movies-content");
         const scrollToTopButton = document.querySelector(".scroll-to-top");
-        const drawerToggleButton = document.querySelector(".drawer-toggle");
+        const drawerToggleButton = document.getElementById("expand-drawer-button");
+        const sidebar = document.querySelector(".sidebar");
 
         scrollToTopButton.addEventListener("click", function () {
             moviesContainer.scrollTo({ top: 0, behavior: "smooth" });
         }, { passive: true });
 
         // Scroll listener for scroll to top button
-        moviesContainer.addEventListener("scroll", function () {
-            if (moviesContainer.scrollTop >= 400) {
+        moviesContainer.closest(".main").addEventListener("scroll", function () {
+            if (moviesContainer.closest(".main").scrollTop >= 400) {
                 scrollToTopButton.classList.remove("hidden");
             } else {
                 scrollToTopButton.classList.add("hidden");
             }
         }, { passive: true });
 
-        document.getElementById("rescan").addEventListener("click", function () {
+        document.getElementById("rescan-button").addEventListener("click", function () {
             $.ajax({
                 url: "/Home/Rescan",
                 type: "GET",
@@ -67,7 +77,7 @@
         });
 
         // Sidebar drawer toggle
-        document.querySelector(".pin-drawer").addEventListener("mousedown", function (event) {
+        pinDrawerCheckbox.addEventListener("click", function () {
             drawer.classList.toggle("pinned");
 
             localStorage.setItem("sideDrawerExpanded", drawer.classList.contains("pinned"));
@@ -78,9 +88,9 @@
             pinDrawerCheckbox.checked = true;
         }
 
-        drawerToggleButton.addEventListener("mousedown", function () {
+        drawerToggleButton.addEventListener("click", function () {
             drawer.classList.toggle("expanded");
-
+            drawerToggleButton.classList.toggle("expanded");
         })
     </script>
 }

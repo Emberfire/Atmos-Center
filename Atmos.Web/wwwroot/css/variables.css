@@ -3,11 +3,11 @@
     --md: 768px;
     --lg: 992px;
     --xl: 1200px;
-    --gray-0: #98a5bd;
-    --gray-1: #c5d0e4;
-    --primary-0: #162938;
-    --primary-1: #2b82a4;
-    --primary-2: #5d97ce;
-    --primary-3: #b3e3ef;
-    --primary-4: #aac9e6;
+
+    --gray-0: #c5d0e4;
+    --gray-1: #98a5bd;
+
+    --primary-0: #aac9e6;
+    --primary-1: #5d97ce;
+    --primary-2: #162938;
 }

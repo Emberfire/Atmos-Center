@@ -1,0 +1,262 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+@import url(variables.css);
+
+/*#region General */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Open Sans', sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+}
+
+video {
+    align-self: center;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+}
+
+.img-responsive {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+/*#endregion */
+
+/*#region Sidebar */
+.sidebar {
+    background-color: var(--primary-0);
+}
+
+.sidebar-content {
+    height: 100%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.drawer-expand-toggle {
+    width: 40px;
+    height: 40px;
+    margin-left: auto;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    border: none;
+    border-radius: 50px;
+    background-color: var(--primary-2);
+    transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
+}
+/*#endregion */
+
+/*#region Sidebar drawer */
+.drawer {
+    /*min-width: 0;
+    max-width: 10rem;*/
+    flex: 0;
+    overflow-x: hidden;
+    box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
+    background-color: var(--primary-2);
+    transition: min-width 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1), flex-basis 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: flex-basis;
+}
+
+/* Keep the drawer open when hovering, because it can't recieve focus and closes. */
+.sidebar:hover + .drawer:not(.pinned),
+.drawer:hover:not(.pinned),
+.drawer:focus:not(.pinned),
+.drawer.pinned,
+.drawer.expanded
+.drawer:focus-within {
+    flex-basis: 10rem;
+}
+
+.drawer-content {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+    padding: 8px;
+    padding-bottom: 35px;
+}
+
+.title {
+    padding: 10px;
+    text-align: center;
+    font-size: xx-large;
+    color: var(--primary-3);
+    display: none;
+}
+
+.drawer .title {
+    min-height: 5rem;
+    margin: -8px;
+    clip-path: polygon(0 0, 100% 0, 100% 94%, 0% 100%);
+    box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
+    background-color: var(--primary-0);
+}
+
+.sidebar .title {
+    margin: 0;
+    background-color: var(--primary-0);
+}
+
+.drawer-checkbox {
+    display: block;
+}
+
+.drawer-expand-toggle {
+    display: none;
+}
+
+.drawer.expanded {
+    flex-basis: 10rem;
+}
+/*#endregion */
+
+.sidebar.expanded .drawer-expand-toggle {
+    transform: rotate(90deg);
+}
+/*#region Movies container */
+.main {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.movies-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: #FFEFBA;
+    background: -webkit-linear-gradient(to bottom, #FFFFFF, var(--primary-4));
+    background: linear-gradient(to bottom, #FFFFFF, var(--primary-4));
+    /* Create a new stacking context, preventing repaint on scroll. Chromium performance issue. */
+    transform: translateZ(0);
+}
+
+/*#region Movie */
+.thumbnail {
+    width: 220px;
+    height: 325px;
+    margin: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.11), 0 2px 2px rgba(0,0,0,0.11), 0 4px 4px rgba(0,0,0,0.11), 0 6px 8px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.11);
+    background-color: white;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .1s ease-in-out;
+    will-change: transform;
+    /* Debug */
+    /*background-color: lightslategray;*/
+}
+
+.thumbnail:hover {
+    transform: translateY(-3px);
+}
+/*#endregion */
+/*#endregion */
+
+/* Large screens */
+@media only screen and (min-width: 740px) {
+    body {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 5rem;
+        height: 100%;
+    }
+
+    .sidebar-content {
+        flex-direction: column;
+    }
+
+    .drawer {
+        /* Collapse the drawer in, instead of just hiding elements. */
+        direction: rtl;
+    }
+
+    .drawer .title {
+        display: block;
+    }
+}
+
+/* Mobile */
+@media only screen and (max-width: 739px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        height: 5rem;
+        width: 100%;
+        order: 1;
+    }
+
+    .sidebar-content {
+        flex-direction: row;
+    }
+
+    .drawer {
+        order: 1;
+        min-width: 100%;
+    }
+
+    .drawer.expanded {
+        flex-basis: 15rem;
+    }
+
+    .drawer-checkbox {
+        display: none;
+    }
+
+    .movies-content {
+        padding: 25px;
+        flex-grow: 1;
+        flex-direction: column;
+        overflow-y: auto;
+        align-items: stretch;
+    }
+
+    .sidebar.expanded .title {
+        display: block;
+    }
+
+    .sidebar.expanded .drawer-expand-toggle {
+        transform: rotate(-90deg);
+    }
+
+    .drawer .title {
+        display: none;
+    }
+
+    .thumbnail {
+        /*box-shadow: 0 0px 1px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.20), 0 2px 4px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.05);*/
+        border-radius: 5px;
+        margin: 5px;
+        min-height: 6rem;
+        -webkit-tap-highlight-color: transparent;
+        width: auto;
+        height: auto;
+    }
+}
