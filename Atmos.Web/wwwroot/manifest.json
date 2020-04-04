@@ -1,0 +1,14 @@
+{
+  "short_name": "Atmos",
+  "name": "Atmos Center",
+  "icons": [
+    {
+      "src": "mobile-logo.png",
+      "sizes": "996x996",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/Home/Movies",
+  "display": "standalone",
+  "orientation": "portrait"
+}
