@@ -69,7 +69,7 @@ body > * {
     height: 20px;
     background-color: transparent;
     border: 1px solid var(--gray-1);
-    border-radius: 8px;
+    border-radius: 10px;
     outline: none;
 }
 
@@ -202,6 +202,10 @@ body > * {
     .sidebar .title {
         padding-left: 15px;
     }
+
+    .sidebar:not(.expanded) .title {
+        display: none;
+    }
 }
 
 /* Large screens */
@@ -260,6 +264,7 @@ body > * {
 @media only screen and (min-width: 740px) {
     .drawer-content {
         direction: rtl;
+        box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
     }
 
     @media (hover: hover) and (pointer: fine) {
