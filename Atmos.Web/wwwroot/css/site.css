@@ -3,6 +3,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
 @import url(variables.css);
 @import url(../lib/font-awesome/css/all.css);
+@import url(sidebar.css);
 
 @font-face {
     font-family: "Open Sans";
@@ -32,25 +33,6 @@ body > * {
     width: auto;
 }
 
-.drawer-expand button {
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    border: none;
-    -webkit-appearance: none;
-    -webkit-tap-highlight-color: transparent;
-    background: var(--primary-0);
-    cursor: pointer;
-    user-select: none;
-    outline: none;
-    transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform;
-}
-
-.drawer-expand button.expanded {
-    transform: rotate(-90deg);
-}
-
 .img-responsive {
     max-width: 100%;
     max-height: 100%;
@@ -61,32 +43,6 @@ body > * {
     user-select: none;
     font-size: xx-large;
     margin: 0;
-}
-
-.drawer-checkbox {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    background-color: transparent;
-    border: 1px solid var(--gray-1);
-    border-radius: 10px;
-    outline: none;
-}
-
-.drawer-checkbox:checked {
-    background-color: var(--gray-1);
-}
-
-.drawer-button {
-    width: 9rem;
-    min-height: 2rem;
-    font-size: 1rem;
-    cursor: pointer;
-    user-select: none;
-    outline: none;
-    border: none;
-    border-radius: 5px;
-    background-color: var(--primary-0);
 }
 
 .scroll-to-top {
@@ -170,139 +126,6 @@ body > * {
 
 /* Large screens */
 @media only screen and (min-width: 740px) {
-}
-/*#endregion */
-
-/*#region Sidebar */
-.sidebar {
-    flex: 0;
-    flex-basis: 5rem;
-    background-color: var(--primary-2);
-}
-
-.sidebar-content {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 10px;
-    list-style: none;
-}
-
-/* Mobile */
-@media only screen and (max-width: 739px) {
-    .sidebar-content {
-        align-items: center;
-    }
-
-    .drawer-expand {
-        margin-left: auto;
-    }
-
-    .sidebar .title {
-        padding-left: 15px;
-    }
-
-    .sidebar:not(.expanded) .title {
-        display: none;
-    }
-}
-
-/* Large screens */
-@media only screen and (min-width: 740px) {
-    .sidebar-content {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .drawer-expand {
-        margin-top: auto;
-    }
-
-    .sidebar .title {
-        display: none;
-    }
-}
-/*#endregion */
-
-/*#region Drawer */
-.drawer {
-    flex: 0;
-    background: var(--primary-1);
-    transition: flex .35s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: flex;
-    overflow: hidden;
-}
-
-.drawer-content {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
-    height: 100%;
-    padding: 8px;
-    padding-bottom: 35px;
-}
-
-.drawer.expanded {
-    flex-shrink: 0;
-    flex-basis: 10rem;
-}
-
-/* Mobile */
-@media only screen and (max-width: 739px) {
-    #pin-drawer {
-        display: none;
-    }
-
-    .drawer .title {
-        display: none;
-    }
-}
-
-/* Large screens */
-@media only screen and (min-width: 740px) {
-    .drawer-content {
-        direction: rtl;
-        box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        .sidebar:hover ~ .drawer:not(.pinned),
-        .sidebar:active ~ .drawer:not(.pinned),
-        .sidebar:focus ~ .drawer:not(.pinned),
-        .drawer:hover {
-            flex-shrink: 0;
-            flex-basis: 10rem;
-        }
-
-        .drawer-expand {
-            display: none;
-        }
-    }
-
-    .drawer-expand {
-        transform: rotate(90deg);
-    }
-
-    .drawer-expand button.expanded {
-        transform: rotate(90deg);
-    }
-
-    .drawer.pinned,
-    .drawer.expanded {
-        flex-shrink: 0;
-        flex-basis: 10rem;
-    }
-
-    .drawer .title {
-        flex-basis: 5rem;
-        margin: -8px;
-        padding: 32px;
-        clip-path: polygon(0 0, 100% 0, 100% 94%, 0% 100%);
-        box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
-        background: var(--primary-2);
-    }
 }
 /*#endregion */
 

@@ -23,9 +23,16 @@
 </nav>
 <div class="drawer">
     <div class="drawer-content">
-        <h2 class="title">Atmos</h2>
-        <input id="pin-drawer" class="drawer-checkbox" style="position: absolute; top: 5px; right: 5px;" type="checkbox" title="Pin drawer" />
-        <button id="rescan-button" class="drawer-button" type="button" style="margin-top: auto;">Rescan</button>
+        <div class="drawer-header">
+            <h2 class="title">Atmos</h2>
+            <input id="pin-drawer" class="drawer-checkbox" style="position: absolute; top: 5px; right: 5px;" type="checkbox" title="Pin drawer" />
+        </div>
+        <div class="drawer-body">
+            <input id="search-for-movies" class="drawer-search" type="search" placeholder="Search for movies"/>
+
+            <button id="rescan-button" class="drawer-button" type="button" style="margin-top: auto;">Rescan</button>
+            <button class="drawer-button" type="button">Rescan 2</button>
+        </div>
     </div>
 </div>
 <main class="main">
@@ -47,6 +54,8 @@
         const scrollToTopButton = document.querySelector(".scroll-to-top");
         const drawerToggleButton = document.getElementById("expand-drawer-button");
         const sidebar = document.querySelector(".sidebar");
+        const movies = document.querySelectorAll(".thumbnail");
+        const searchForMoviesField = document.getElementById("search-for-movies");
 
         scrollToTopButton.addEventListener("click", function () {
             moviesContainer.closest(".main").scrollTo({ top: 0, behavior: "smooth" });
@@ -93,5 +102,17 @@
             sidebar.classList.toggle("expanded");
             drawerToggleButton.classList.toggle("expanded");
         })
+
+        searchForMoviesField.addEventListener("input", function (event) {
+            console.time("search filter");
+            movies.forEach((element) => {
+                if (!element.textContent.toLowerCase().includes(event.target.value)) {
+                    element.style.display = "none";
+                } else {
+                    element.style.removeProperty("display");
+                }
+            });
+            console.timeEnd("search filter");
+        });
     </script>
 }

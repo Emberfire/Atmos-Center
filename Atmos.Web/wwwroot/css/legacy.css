@@ -59,7 +59,7 @@ video {
     outline: none;
     border: none;
     border-radius: 50px;
-    background-color: var(--primary-2);
+    background-color: var(--primary-3);
     transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
 }
 /*#endregion */
@@ -71,7 +71,7 @@ video {
     flex: 0;
     overflow-x: hidden;
     box-shadow: inset 1px 0px 1px rgba(0,0,0,0.09), inset 2px 0px 2px rgba(0,0,0,0.09), inset 4px 0px 4px rgba(0,0,0,0.09);
-    background-color: var(--primary-2);
+    background-color: var(--primary-3);
     transition: min-width 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1), flex-basis 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: flex-basis;
 }
