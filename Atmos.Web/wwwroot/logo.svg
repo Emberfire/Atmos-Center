@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="1601px" height="1557px" viewBox="0 0 1601 1557" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bones-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+	  <stop offset="0%" style="stop-color:#FF9133;" />
+	  <stop offset="100%" style="stop-color:#FF0015;" />
+    </linearGradient>
+  </defs>
+<desc>Created with Lunacy</desc>
+  <path d="M0 8.06218L960 8.06218" transform="translate(640.5 1387.194)" id="Line"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 1394.76L800 0" transform="translate(0.5 0.5)" id="Line-2"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 1394.76L800 0" transform="matrix(-1 0 0 1 1600.5 0.5)" id="Line-3"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 451.482L256 0" transform="translate(640.5 943.7747)" id="Line-4"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M80 0L0 209.617" transform="translate(816.5 943.7747)" id="Line-5"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 8.06218L312 8.06218" transform="translate(816.5 1145.329)" id="Line-6"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 556.29L320 0" transform="matrix(-1 0 0 1 1128.5 597.1011)" id="Line-7"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M72 0L0 185.43" transform="translate(808.5 411.671)" id="Line-8"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 8.06218L288 8.06218" transform="translate(0.5 1387.194)" id="Line-10"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 1144.83L640 0" transform="translate(240.5 411.671)" id="Line-11"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+  <path d="M0 161.244L48 0" transform="translate(240.5 1395.256)" id="Line-12"  fill="url(#bones-gradient)" stroke="#000000" stroke-width="1" />
+</svg>
