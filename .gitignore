@@ -389,3 +389,4 @@ MigrationBackup/
 .ionide/
 
 Atmos.Web/Migrations
+.idea
