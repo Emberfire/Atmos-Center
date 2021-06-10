@@ -1,14 +1,13 @@
 ﻿using Atmos.Web.Data;
-using Atmos.Web.Logic.Constants;
-using Atmos.Web.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Atmos.Web.Data.Entities;
+using Atmos.Web.Resources;
 using static Atmos.Web.Logic.Constants.CommonTypes;
 
 namespace Atmos.Web.Logic.Client
@@ -16,11 +15,11 @@ namespace Atmos.Web.Logic.Client
     class AtmosClientSession : IAtmosClientSession
     {
         public string SessionId { get; set; }
-        private readonly AtmosContext Context;
+        private readonly AtmosContext _context;
 
         public AtmosClientSession(AtmosContext context)
         {
-            Context = context;
+            _context = context;
         }
 
         public FileInfo GetSingleFileOfType(DirectoryInfo directoryInfo, FileType fileType)
@@ -32,15 +31,16 @@ namespace Atmos.Web.Logic.Client
                 FileType.Avi => "*.avi",
                 FileType.Vtt => "*.vtt",
                 FileType.Srt => "*.srt",
-                _ => throw new ArgumentException("Provided file type is invalid!", nameof(fileType)),
+                FileType.Sub => "*.sub",
+                _ => throw new ArgumentException(en.InvalidFileType, nameof(fileType)),
             };
             return directoryInfo.EnumerateFiles(searchPattern, SearchOption.AllDirectories).ToList().First();
         }
-        public List<FileInfo> GetFilesOfType(string path, FileType fileType)
+        public IEnumerable<FileInfo> GetFilesOfType(string path, FileType fileType)
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException("Provided folder path is invalid!", nameof(path));
+                throw new ArgumentException(en.InvalidFolderPath, nameof(path));
             }
 
             string searchPattern = fileType switch
@@ -50,23 +50,24 @@ namespace Atmos.Web.Logic.Client
                 FileType.Avi => "*.avi",
                 FileType.Vtt => "*.vtt",
                 FileType.Srt => "*.srt",
-                _ => throw new ArgumentException("Provided file type is invalid!", nameof(fileType)),
+                FileType.Sub => "*.sub",
+                _ => throw new ArgumentException(en.InvalidFileType, nameof(fileType)),
             };
 
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             return directoryInfo.EnumerateFiles(searchPattern, SearchOption.AllDirectories).ToList();
         }
-        public List<FileInfo> GetFilesOfType(string path, IEnumerable<FileType> fileTypes)
+        public IEnumerable<FileInfo> GetFilesOfType(string path, IEnumerable<FileType> fileTypes)
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException("Provided folder path is invalid!", nameof(path));
+                throw new ArgumentException(en.InvalidFolderPath, nameof(path));
             }
 
             List<FileInfo> files = new List<FileInfo>();
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
 
-            foreach (var fileType in fileTypes)
+            foreach (FileType fileType in fileTypes)
             {
                 string searchPattern = fileType switch
                 {
@@ -75,7 +76,8 @@ namespace Atmos.Web.Logic.Client
                     FileType.Avi => "*.avi",
                     FileType.Vtt => "*.vtt",
                     FileType.Srt => "*.srt",
-                    _ => throw new ArgumentException("Provided file type is invalid!", nameof(fileTypes)),
+                    FileType.Sub => "*.sub",
+                    _ => throw new ArgumentException(en.InvalidFileType, nameof(fileTypes)),
                 };
 
                 files.AddRange(directoryInfo.EnumerateFiles(searchPattern, SearchOption.AllDirectories));
@@ -83,21 +85,21 @@ namespace Atmos.Web.Logic.Client
 
             return files;
         }
-        public void RemoveFilesByPattern(string pattern, List<FileInfo> files)
+        public void RemoveFilesByPattern(string pattern, IEnumerable<FileInfo> files)
         {
             if (string.IsNullOrEmpty(pattern))
             {
-                throw new ArgumentException("Provided pattern is empty!", nameof(pattern));
+                throw new ArgumentException(en.EmptyPattern, nameof(pattern));
             }
 
             if (files is null)
             {
-                throw new ArgumentNullException("Provided array of files is invalid!", nameof(files));
+                throw new ArgumentNullException(nameof(files), en.InvalidFileCollection);
             }
 
             Regex regex = new Regex(pattern);
 
-            files.RemoveAll(file =>
+            files.ToList().RemoveAll(file =>
             {
                 Match match = regex.Match(file.Name.Split(".")[0]);
                 return match.Success;
@@ -108,24 +110,22 @@ namespace Atmos.Web.Logic.Client
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException("Provided folder path is empty!", nameof(path));
+                throw new ArgumentException(en.EmptyFolderPath, nameof(path));
             }
 
             PurgeMovies();
 
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
-            List<FileInfo> files = GetFilesOfType(path, new[] { FileType.Mp4, FileType.Mkv, FileType.Avi });
+            IEnumerable<FileInfo> files = GetFilesOfType(path, new[] { FileType.Mp4, FileType.Mkv, FileType.Avi });
 
-            RemoveFilesByPattern(Consts.EpisodeRegexPattern, files);
+            //RemoveFilesByPattern(Constants.Constants.EpisodeRegexPattern, files);
 
-            List<Movie> movies = files.Select((file, index) =>
+            List<Movie> movies = files.Select((file, index) => new Movie
             {
-                return new Movie()
-                {
-                    Path = file.FullName,
-                    Title = file.Name.Split(".")[0],
-                    Extension = file.Extension
-                };
+                Id = Guid.NewGuid().ToString(),
+                Path = file.FullName,
+                Title = file.Name.Split(".")[0],
+                Extension = file.Extension
             }).OrderBy(movie => movie.Title).ToList();
 
             foreach (Movie movie in movies)
@@ -136,24 +136,24 @@ namespace Atmos.Web.Logic.Client
                 //}
                 //else
                 //{
-                    Context.Movies.Add(movie);
+                    _context.Movies.Add(movie);
                 //}
             }
 
-            Context.SaveChanges();
-            RescanDirectoryForSubtitles(path);
+            _context.SaveChanges();
+            //RescanDirectoryForSubtitles(path);
         }
         public void RescanDirectoryForSubtitles(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException("Provided folder path is empty!", nameof(path));
+                throw new ArgumentException(en.EmptyFolderPath, nameof(path));
             }
 
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
-            List<FileInfo> files = GetFilesOfType(path, new[] { FileType.Srt, FileType.Vtt });
+            IEnumerable<FileInfo> files = GetFilesOfType(path, new[] { FileType.Srt, FileType.Vtt });
 
-            RemoveFilesByPattern(Consts.EpisodeRegexPattern, files);
+            //RemoveFilesByPattern(Constants.Constants.EpisodeRegexPattern, files);
 
             List<Subtitle> subtitles = files.Select((file, index) =>
             {
@@ -164,15 +164,15 @@ namespace Atmos.Web.Logic.Client
                 };
 
                 string title = file.Name.Split(".")[0];
-                Movie movie = Context.Movies.FirstOrDefault(m => m.Title == title);
+                Movie movie = _context.Movies.FirstOrDefault(m => m.Title == title);
                 if (movie is null)
                 {
                     // If the subtitle has a different title than the movie,
                     //scan its directory for movies and use the first available one.
-                    List<FileInfo> movieWithDifferentName = GetFilesOfType(file.Directory.FullName, new[] { FileType.Mp4, FileType.Mkv, FileType.Avi });
+                    IEnumerable<FileInfo> movieWithDifferentName = GetFilesOfType(file.Directory?.FullName, new[] { FileType.Mp4, FileType.Mkv, FileType.Avi });
 
-                    title = movieWithDifferentName[0].Name.Split(".")[0];
-                    movie = Context.Movies.FirstOrDefault(m => m.Title == title);
+                    title = movieWithDifferentName.ToList()[0].Name.Split(".")[0];
+                    movie = _context.Movies.FirstOrDefault(m => m.Title == title);
                 }
 
                 if (movie != null)
@@ -197,46 +197,46 @@ namespace Atmos.Web.Logic.Client
 
             foreach (Subtitle subtitle in subtitles)
             {
-                bool alreadyExists = Context.Subtitles.Any(s => s.Movie.Title == subtitle.Movie.Title);
+                bool alreadyExists = _context.Subtitles.Any(s => s.Movie.Title == subtitle.Movie.Title);
                 if (!alreadyExists)
                 {
-                    Context.Subtitles.Add(subtitle);
+                    _context.Subtitles.Add(subtitle);
                 }
             }
 
-            Context.SaveChanges();
+            _context.SaveChanges();
         }
         public void PurgeMovies()
         {
-            List<Movie> movies = Context.Movies.ToList();
-            Context.Movies.RemoveRange(movies);
+            List<Movie> movies = _context.Movies.ToList();
+            _context.Movies.RemoveRange(movies);
 
-            Context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        public async Task<List<Movie>> GetAllMoviesAsync()
+        public async Task<IEnumerable<Movie>> GetAllMoviesAsync()
         {
-            List<Movie> movies = await Context.Movies.OrderBy(movie => movie.Title).ToListAsync().ConfigureAwait(false);
+            List<Movie> movies = await _context.Movies.OrderBy(movie => movie.Title).ToListAsync().ConfigureAwait(false);
             return movies;
         }
-        public async Task<List<Movie>> GetMoviesByTypeAsync(string type)
+        public async Task<IEnumerable<Movie>> GetMoviesByTypeAsync(string type)
         {
-            List<Movie> movies = await Context.Movies.Where(m => m.Extension == type).OrderBy(movie => movie.Title).ToListAsync().ConfigureAwait(false);
+            List<Movie> movies = await _context.Movies.Where(m => m.Extension == type).OrderBy(movie => movie.Title).ToListAsync().ConfigureAwait(false);
             return movies;
         }
         public async Task<Movie> GetMovieAsync(string id)
         {
-            Movie movie = await Context.Movies.FindAsync(id);
+            Movie movie = await _context.Movies.FindAsync(id);
             return movie;
         }
         public async Task<Subtitle> GetSubtitleAsync(string id)
         {
-            Subtitle subtitle = await Context.Subtitles.FindAsync(id);
+            Subtitle subtitle = await _context.Subtitles.FindAsync(id);
             return subtitle;
         }
-        public async Task<List<Subtitle>> GetMovieSubtitlesAsync(string id)
+        public async Task<IEnumerable<Subtitle>> GetMovieSubtitlesAsync(string id)
         {
-            Movie movie = await Context.Movies.FindAsync(id);
+            Movie movie = await _context.Movies.FindAsync(id);
             return movie.Subtitles;
         }
 

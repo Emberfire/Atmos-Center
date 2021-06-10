@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Atmos.Web.Models.Entities;
+using Atmos.Web.Data.Entities;
 
 namespace Atmos.Web.Logic.Utils
 {

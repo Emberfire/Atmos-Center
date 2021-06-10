@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
-namespace Atmos.Web.Models.Entities
+namespace Atmos.Web.Data.Entities
 {
     public class Movie
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -17,6 +15,6 @@ namespace Atmos.Web.Models.Entities
         [Required]
         public string Extension { get; set; }
 
-        public virtual List<Subtitle> Subtitles { get; } = new List<Subtitle>();
+        public virtual ICollection<Subtitle> Subtitles { get; }
     }
 }

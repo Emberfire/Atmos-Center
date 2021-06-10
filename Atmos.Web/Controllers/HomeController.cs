@@ -4,13 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Atmos.Web.Models.ViewModels;
-using System.IO;
-using System.Text.RegularExpressions;
 using Atmos.Web.Logic.Client;
 using Atmos.Web.Models;
 using Atmos.Web.Data;
+using Atmos.Web.Data.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace Atmos.Web.Controllers
@@ -57,29 +54,26 @@ namespace Atmos.Web.Controllers
 
         public async Task<IActionResult> Movies()
         {
-            if (Request.Cookies["trusted"] == "true")
-            {
-                List<Models.Entities.Movie> movies = await Session.GetMoviesByTypeAsync(".mp4").ConfigureAwait(false);
-                IEnumerable<MovieViewModel> model = movies.Select((movie, index) =>
-                {
-                    return new MovieViewModel()
-                    {
-                        Id = movie.Id,
-                        Title = movie.Title,
-                        Extension = movie.Extension
-                    };
-                });
-                return View(model);
-            }
-            else
+            if (Request.Cookies["trusted"] != "true")
             {
                 return RedirectToAction("Index");
             }
+
+            IEnumerable<Movie> movies = await Session.GetAllMoviesAsync().ConfigureAwait(false);
+            IEnumerable<MovieViewModel> model = movies.Select((movie, index) => new MovieViewModel
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Extension = movie.Extension
+            });
+            
+            return View(model);
+
         }
 
         public async Task<IActionResult> Watch(string id)
         {
-            Models.Entities.Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
+            Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
             //(new NReco.VideoConverter.FFMpegConverter()).ConvertMedia(pathToVideoFile, pathToOutputMp4File, Formats.mp4)
             MovieViewModel model = new MovieViewModel()
             {
@@ -88,7 +82,7 @@ namespace Atmos.Web.Controllers
                 Extension = movie.Extension
             };
 
-            foreach (Models.Entities.Subtitle subtitle in movie.Subtitles)
+            foreach (Subtitle subtitle in movie.Subtitles)
             {
                 model.Subtitles.Add(subtitle.Language, subtitle.Id);
             }
@@ -105,7 +99,7 @@ namespace Atmos.Web.Controllers
 
         public async Task<IActionResult> GetVideo(string id)
         {
-            Models.Entities.Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
+            Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
             if (movie != null)
             {
                 return PhysicalFile(movie.Path, "application/octet-stream", enableRangeProcessing: true);
@@ -118,7 +112,7 @@ namespace Atmos.Web.Controllers
 
         public async Task<IActionResult> GetSubtitle(string id)
         {
-            Models.Entities.Subtitle subtitles = await Session.GetSubtitleAsync(Uri.UnescapeDataString(id)).ConfigureAwait(false);
+            Subtitle subtitles = await Session.GetSubtitleAsync(Uri.UnescapeDataString(id)).ConfigureAwait(false);
             if (subtitles != null)
             {
                 return PhysicalFile(subtitles.Path, "application/json");
@@ -131,7 +125,7 @@ namespace Atmos.Web.Controllers
 
         public IActionResult Rescan()
         {
-            Session.RescanDirectoryForMovies(@"D:\Movies");
+            Session.RescanDirectoryForMovies(@"W:\Movies");
             return Content("Success");
         }
 

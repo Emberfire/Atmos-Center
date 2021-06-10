@@ -2,22 +2,32 @@
 
 namespace Atmos.Web.Migrations
 {
-    public partial class AddSubtitles : Migration
+    public partial class Main : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SubtitlePath",
-                table: "Movies");
+            migrationBuilder.CreateTable(
+                name: "Movies",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    Extension = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movies", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Subtitles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    Language = table.Column<string>(nullable: false),
-                    Path = table.Column<string>(nullable: false),
-                    MovieId = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Language = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    MovieId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,11 +51,8 @@ namespace Atmos.Web.Migrations
             migrationBuilder.DropTable(
                 name: "Subtitles");
 
-            migrationBuilder.AddColumn<string>(
-                name: "SubtitlePath",
-                table: "Movies",
-                type: "nvarchar(max)",
-                nullable: true);
+            migrationBuilder.DropTable(
+                name: "Movies");
         }
     }
 }

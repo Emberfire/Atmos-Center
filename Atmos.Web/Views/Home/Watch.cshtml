@@ -3,7 +3,7 @@
     ViewData["Title"] = "Watch";
 }
 
-<video id="movie" controls preload="auto">
+<video id="movie" controls preload="auto" style="width: 100%; height: auto; background: black;">
     <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/mp4" />
     <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/mkv" />
     <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/avi" />

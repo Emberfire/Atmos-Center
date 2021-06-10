@@ -1,10 +1,9 @@
 ﻿using Atmos.Web.Logic.Utils;
-using Atmos.Web.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Atmos.Web.Data.Configurations;
+using Atmos.Web.Data.Entities;
 
 namespace Atmos.Web.Data
 {
@@ -21,14 +20,11 @@ namespace Atmos.Web.Data
         public virtual DbSet<Movie> Movies { get; set; }
         public virtual DbSet<Subtitle> Subtitles { get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<Movie>().HasIndex(m => m.Path).IsUnique();
-        //}
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseLazyLoadingProxies().UseSqlServer(@"Data Source=DESKTOP-S06O8U5;Initial Catalog=AtmosDb;Integrated Security=True");
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new MovieConfiguration());
+            modelBuilder.ApplyConfiguration(new SubtitleConfiguration());
+        }
 
         public void UpdateMovie(Movie movie)
         {

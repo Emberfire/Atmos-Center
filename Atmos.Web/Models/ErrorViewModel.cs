@@ -1,6 +1,4 @@
-using System;
-
-namespace Atmos.Web.Models.ViewModels
+namespace Atmos.Web.Models
 {
     public class ErrorViewModel
     {
