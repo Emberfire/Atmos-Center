@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -74,8 +75,7 @@ namespace Atmos.Web.Controllers
         public async Task<IActionResult> Watch(string id)
         {
             Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
-            //(new NReco.VideoConverter.FFMpegConverter()).ConvertMedia(pathToVideoFile, pathToOutputMp4File, Formats.mp4)
-            MovieViewModel model = new MovieViewModel()
+            MovieViewModel model = new()
             {
                 Id = movie.Id,
                 Title = movie.Title,
@@ -86,14 +86,8 @@ namespace Atmos.Web.Controllers
             {
                 model.Subtitles.Add(subtitle.Language, subtitle.Id);
             }
-            //if (path.Split(".")[1] == "mkv")
-            //{
-            //    var ffMpeg = new NReco.VideoConverter.FFMpegConverter();
-            //    var newPath = Uri.UnescapeDataString(path).Split(".")[0] + ".mp4";
-            //    ffMpeg.ConvertMedia(path, newPath, Format.mp4);
-            //}
 
-            //ViewBag.Subs = path.Split(".")[0] + ".vtt";
+            //var tfile = TagLib.File.Create(movie.Path);
             return View(model);
         }
 
