@@ -9,6 +9,7 @@ using Atmos.Web.Models;
 using Atmos.Web.Data;
 using Atmos.Web.Data.Entities;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Atmos.Web.Controllers
 {
@@ -60,22 +61,46 @@ namespace Atmos.Web.Controllers
             }
 
             IEnumerable<Movie> movies = await Session.GetAllMoviesAsync().ConfigureAwait(false);
-            IEnumerable<MovieViewModel> model = movies.Select((movie, index) => new MovieViewModel
+            IEnumerable<MovieViewModel> model = movies.Select(movie =>
             {
-                Id = movie.Id,
-                Title = movie.Title,
-                Extension = movie.Extension
+                MovieViewModel viewModel = new()
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    Extension = movie.Extension
+                };
+
+                return viewModel;
             });
             
             return View(model);
 
         }
 
+        public ActionResult GetCover(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return null;
+            }
+
+            Movie movie = Session.GetMovie(id);
+            try
+            {
+                string coverPath = Path.Combine(new DirectoryInfo(movie.Path).Parent.FullName, "cover.jpg");
+                FileStream image = System.IO.File.OpenRead(coverPath);
+                return File(image, "image/jpg");
+            }
+            catch (FileNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
         public async Task<IActionResult> Watch(string id)
         {
             Movie movie = await Session.GetMovieAsync(id).ConfigureAwait(false);
-            //(new NReco.VideoConverter.FFMpegConverter()).ConvertMedia(pathToVideoFile, pathToOutputMp4File, Formats.mp4)
-            MovieViewModel model = new MovieViewModel()
+            MovieViewModel model = new MovieViewModel
             {
                 Id = movie.Id,
                 Title = movie.Title,
@@ -86,14 +111,7 @@ namespace Atmos.Web.Controllers
             {
                 model.Subtitles.Add(subtitle.Language, subtitle.Id);
             }
-            //if (path.Split(".")[1] == "mkv")
-            //{
-            //    var ffMpeg = new NReco.VideoConverter.FFMpegConverter();
-            //    var newPath = Uri.UnescapeDataString(path).Split(".")[0] + ".mp4";
-            //    ffMpeg.ConvertMedia(path, newPath, Format.mp4);
-            //}
 
-            //ViewBag.Subs = path.Split(".")[0] + ".vtt";
             return View(model);
         }
 

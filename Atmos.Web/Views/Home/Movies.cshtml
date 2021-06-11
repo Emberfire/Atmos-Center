@@ -4,10 +4,6 @@
     ViewData["Title"] = "Movies";
 }
 
-@*
-    
-*@
-
 <nav class="sidebar">
     <ul class="sidebar-content">
         <li class="sidebar-item">
@@ -37,11 +33,12 @@
 </div>
 <main class="main">
     <div class="movies-content">
+        
         @foreach (MovieViewModel movie in Model)
         {
-            <a href="@Url.Action("Watch", "Home", new { id = movie.Id })" class="thumbnail">
-                @movie.Title
-            </a>
+            <a style="background-image:url('/Home/GetCover/@movie.Id');"
+               href="@Url.Action("Watch", "Home", new { id = movie.Id })"
+               class="thumbnail"></a>
         }
     </div>
 </main>

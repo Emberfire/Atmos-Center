@@ -22,6 +22,8 @@ namespace Atmos.Web.Logic.Client
 
         public Task<IEnumerable<Movie>> GetAllMoviesAsync();
         public Task<IEnumerable<Movie>> GetMoviesByTypeAsync(string type);
+        
+        public Movie GetMovie(string id);
         public Task<Movie> GetMovieAsync(string id);
         public Task<Subtitle> GetSubtitleAsync(string id);
         public Task<IEnumerable<Subtitle>> GetMovieSubtitlesAsync(string id);

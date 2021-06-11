@@ -224,6 +224,10 @@ namespace Atmos.Web.Logic.Client
             List<Movie> movies = await _context.Movies.Where(m => m.Extension == type).OrderBy(movie => movie.Title).ToListAsync().ConfigureAwait(false);
             return movies;
         }
+        public Movie GetMovie(string id)
+        {
+            return _context.Movies.Find(id);
+        }
         public async Task<Movie> GetMovieAsync(string id)
         {
             Movie movie = await _context.Movies.FindAsync(id);
