@@ -10,7 +10,7 @@
         @foreach (MovieViewModel movie in Model)
         {
             <a class="thumbnail" href="@Url.Action("Watch", "Home", new { id = movie.Id })">
-                <img alt="@movie.Title" src="/Home/GetCover/@movie.Id">
+                <img loading="lazy" alt="@movie.Title" src="/Home/GetCover/@movie.Id">
             </a>
         }
     </div>
