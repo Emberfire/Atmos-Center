@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -85,16 +88,8 @@ namespace Atmos.Web.Controllers
             }
 
             Movie movie = Session.GetMovie(id);
-            try
-            {
-                string coverPath = Path.Combine(new DirectoryInfo(movie.Path).Parent.FullName, "cover.jpg");
-                FileStream image = System.IO.File.OpenRead(coverPath);
-                return File(image, "image/jpg");
-            }
-            catch (FileNotFoundException)
-            {
-                return NotFound();
-            }
+            
+            return File(movie.Cover, "image/jpg");
         }
 
         public async Task<IActionResult> Watch(string id)
@@ -106,11 +101,6 @@ namespace Atmos.Web.Controllers
                 Title = movie.Title,
                 Extension = movie.Extension
             };
-
-            foreach (Subtitle subtitle in movie.Subtitles)
-            {
-                model.Subtitles.Add(subtitle.Language, subtitle.Id);
-            }
 
             return View(model);
         }

@@ -4,69 +4,19 @@
     ViewData["Title"] = "Movies";
 }
 
-<nav class="sidebar">
-    <ul class="sidebar-content">
-        <li class="sidebar-item">
-            <img class="img-responsive" src="~/atmos.png" alt="Logo" width="60" height="60" />
-        </li>
-        <li class="sidebar-item">
-            <h2 class="title">Atmos</h2>
-        </li>
-        <li class="sidebar-item drawer-expand">
-            <button id="expand-drawer-button" type="button"><i class="fas fa-angle-double-left"></i></button>
-        </li>
-    </ul>
-</nav>
-<div class="drawer">
-    <div class="drawer-content">
-        <div class="drawer-header">
-            <h2 class="title">Atmos</h2>
-            <input id="pin-drawer" class="drawer-checkbox" style="position: absolute; top: 5px; right: 5px;" type="checkbox" title="Pin drawer" />
-        </div>
-        <div class="drawer-body">
-            <input id="search-for-movies" class="drawer-search" type="search" placeholder="Search for movies"/>
-
-            <button id="rescan-button" class="drawer-button" type="button" style="margin-top: auto;">Rescan</button>
-            <button class="drawer-button" type="button">Rescan 2</button>
-        </div>
-    </div>
-</div>
+<button id="rescan-button" class="drawer-button" type="button">Rescan</button>
 <main class="main">
     <div class="movies-content">
-        
         @foreach (MovieViewModel movie in Model)
         {
-            <a style="background-image:url('/Home/GetCover/@movie.Id');"
-               href="@Url.Action("Watch", "Home", new { id = movie.Id })"
-               class="thumbnail"></a>
+            <a class="thumbnail" href="@Url.Action("Watch", "Home", new { id = movie.Id })">
+                <img alt="@movie.Title" src="/Home/GetCover/@movie.Id">
+            </a>
         }
     </div>
 </main>
-<button class="scroll-to-top hidden" type="button"><i class="fas fa-arrow-alt-circle-up"></i> Scroll to top</button>
 @section scripts {
     <script defer>
-        const drawer = document.querySelector(".drawer");
-        const pinDrawerCheckbox = document.getElementById("pin-drawer");
-        const moviesContainer = document.querySelector(".movies-content");
-        const scrollToTopButton = document.querySelector(".scroll-to-top");
-        const drawerToggleButton = document.getElementById("expand-drawer-button");
-        const sidebar = document.querySelector(".sidebar");
-        const movies = document.querySelectorAll(".thumbnail");
-        const searchForMoviesField = document.getElementById("search-for-movies");
-
-        scrollToTopButton.addEventListener("click", function () {
-            moviesContainer.closest(".main").scrollTo({ top: 0, behavior: "smooth" });
-        }, { passive: true });
-
-        // Scroll listener for scroll to top button
-        moviesContainer.closest(".main").addEventListener("scroll", function () {
-            if (moviesContainer.closest(".main").scrollTop >= 400) {
-                scrollToTopButton.classList.remove("hidden");
-            } else {
-                scrollToTopButton.classList.add("hidden");
-            }
-        }, { passive: true });
-
         document.getElementById("rescan-button").addEventListener("click", function () {
             $.ajax({
                 url: "/Home/Rescan",
@@ -80,36 +30,6 @@
                     window.location.reload();
                 }
             });
-        });
-
-        // Sidebar drawer toggle
-        pinDrawerCheckbox.addEventListener("click", function () {
-            drawer.classList.toggle("pinned");
-
-            localStorage.setItem("sideDrawerExpanded", drawer.classList.contains("pinned"));
-        });
-
-        if (localStorage.getItem("sideDrawerExpanded") === "true") {
-            drawer.classList.add("pinned");
-            pinDrawerCheckbox.checked = true;
-        }
-
-        drawerToggleButton.addEventListener("click", function () {
-            drawer.classList.toggle("expanded");
-            sidebar.classList.toggle("expanded");
-            drawerToggleButton.classList.toggle("expanded");
-        })
-
-        searchForMoviesField.addEventListener("input", function (event) {
-            console.time("search filter");
-            movies.forEach((element) => {
-                if (!element.textContent.toLowerCase().includes(event.target.value)) {
-                    element.style.display = "none";
-                } else {
-                    element.style.removeProperty("display");
-                }
-            });
-            console.timeEnd("search filter");
         });
     </script>
 }

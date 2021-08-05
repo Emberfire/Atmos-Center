@@ -3,39 +3,4 @@
     ViewData["Title"] = "Watch";
 }
 
-<video id="movie" controls preload="auto" style="width: 100%; height: auto; background: black;">
-    <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/mp4" />
-    <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/mkv" />
-    <source src="@Url.Action("GetVideo", "Home", new { id = Model.Id })" type="video/avi" />
-    <p>
-        To view this video please enable JavaScript, and consider upgrading to a
-        web browser that supports HTML5 video.
-    </p>
-
-    
-        <track id="movie-subtitle" default kind="subtitles" srclang="en" />
-</video>
-<script src="~/js/srt-webvtt.js"></script>
-<script>
-    function reqListener() {
-        const vttConverter = new WebVTTConverter(new Blob([this.response], { type: "text/srt" })); // the constructor accepts a parameer of SRT subtitle blob/file object
-
-        vttConverter.getURL().then(function (url) { // Its a valid url that can be used further
-            var track = document.getElementById('movie-subtitle'); // Track element (which is child of a video element)
-            var video = document.getElementById('movie'); // Main video element
-            track.src = url; // Set the converted URL to track's source
-            video.textTracks[0].mode = 'show'; // Start showing subtitle to your track
-        }).catch(function (err) {
-            console.error(err);
-        });
-    }
-    @if (Model.Subtitles.ContainsKey("en") && !string.IsNullOrEmpty(Model.Subtitles["en"]))
-    {
-        <text>
-        var oReq = new XMLHttpRequest();
-        oReq.addEventListener("load", reqListener);
-        oReq.open("GET", "/Home/GetSubtitle/@Uri.EscapeDataString(Model.Subtitles["en"])");
-        oReq.send();
-        </text>
-    }
-</script>
+<video src="/Home/GetVideo/@Model.Id" id="movie" controls preload="auto" style="width: 100%; height: auto; background: black;"></video>

@@ -3,7 +3,6 @@ for details on configuring this project to bundle and minify static web assets. 
 
 @import url(variables.css);
 @import url(../lib/font-awesome/css/all.css);
-@import url(sidebar.css);
 
 @font-face {
     font-family: "Open Sans";
@@ -23,16 +22,6 @@ html, body {
     margin: 0;
 }
 
-body {
-    display: flex;
-}
-
-body > * {
-    flex: 1;
-    height: 100%;
-    width: auto;
-}
-
 .img-responsive {
     max-width: 100%;
     max-height: 100%;
@@ -45,47 +34,13 @@ body > * {
     margin: 0;
 }
 
-.scroll-to-top {
-    height: 2.5rem;
-    display: inline-block;
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    padding: 8px 12px;
-    font-weight: bold;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #1f3e32;
-    border: 1px solid transparent;
-    border-radius: 50px;
-    background-color: #95dab6;
-    cursor: pointer;
-    user-select: none;
-    outline: none;
-    text-align: center;
-    vertical-align: middle;
-    -webkit-tap-highlight-color: transparent;
-    transition: transform .2s cubic-bezier(0.85, -0.02, 0, 0.98);
-    will-change: transform, background-color;
-}
-
-.scroll-to-top:hover {
-    background-color: #6bc797;
-}
-
-.scroll-to-top.hidden {
-    transform: translateX(130%);
-}
-
 /*#region Movie */
 .thumbnail {
     width: 220px;
     height: 325px;
     margin: 5px;
     margin-bottom: 15px;
-    padding: 5px;
     text-align: center;
-    display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 1px 1px rgba(0,0,0,0.11), 0 2px 2px rgba(0,0,0,0.11), 0 4px 4px rgba(0,0,0,0.11), 0 6px 8px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.11);
@@ -102,32 +57,13 @@ body > * {
 .thumbnail:hover {
     transform: translateY(-3px);
 }
+
+.thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 /*#endregion */
-
-/* Mobile */
-@media only screen and (max-width: 739px) {
-    body {
-        flex-direction: column;
-    }
-
-    .scroll-to-top {
-        line-height: 1;
-        border-radius: 15px 0 0 0;
-        bottom: 5.3rem;
-        right: 0;
-        -webkit-tap-highlight-color: transparent;
-        transition: bottom .35s cubic-bezier(0.16, 1, 0.3, 1), transform .2s cubic-bezier(0.85, -0.02, 0, 0.98);
-        will-change: bottom;
-    }
-
-    .drawer.expanded ~ .scroll-to-top {
-        bottom: 15.3rem;
-    }
-}
-
-/* Large screens */
-@media only screen and (min-width: 740px) {
-}
 /*#endregion */
 
 /*#region Main */
@@ -144,16 +80,5 @@ body > * {
     background: #FFEFBA;
     background: -webkit-linear-gradient(to bottom, #FFFFFF, var(--primary-4));
     background: linear-gradient(to bottom, #FFFFFF, var(--primary-4));
-}
-
-/* Mobile */
-@media only screen and (max-width: 739px) {
-    .main {
-        order: -1;
-    }
-}
-
-/* Large screens */
-@media only screen and (min-width: 740px) {
 }
 /*#endregion */
